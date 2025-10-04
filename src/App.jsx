@@ -11,7 +11,7 @@ import { useDispatch } from 'react-redux';
 import { fetchSubcategories } from './features/subcategories/subcategoryThunks';
 import { fetchArticles } from './features/articles/articleThunks';
 import HomePage from './pages/HomePage';
-import SearchPage from './pages/Searchpage';
+import SearchPage from './pages/SearchPage';
 
 function App() {
 	const dispatch = useDispatch();
