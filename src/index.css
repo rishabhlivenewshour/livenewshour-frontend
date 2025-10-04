@@ -1,0 +1,23 @@
+@import 'tailwindcss';
+
+@theme {
+	--color-primary: #d10000;
+	--color-back: #ffffff;
+	--color-dark: #1a1a1a;
+	--color-light: #555555;
+}
+
+* {
+	box-sizing: border-box;
+	font-family: 'Poppins', sans-serif;
+}
+
+button {
+	cursor: pointer;
+	outline: none;
+}
+
+::selection {
+	background-color: #d10000;
+	color: #ffffff;
+}
