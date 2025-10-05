@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
 	selectArticles,
 	selectArticlesError,
-	selectArticlesLoading,
 } from '../features/articles/articleSelector';
 import { selectSubcategories } from '../features/subcategories/subcatgeorySelector';
 import { Loader } from 'lucide-react';
@@ -21,7 +20,7 @@ const ArticlesBySubcatgeoryPage = () => {
 	const [relatedArticles, setRelatedArticles] = useState([]);
 	const { subcategory_slug } = useParams();
 	const articles = useSelector(selectArticles);
-	const articlesLoading = useSelector(selectArticlesLoading);
+	// const articlesLoading = useSelector(selectArticlesLoading);
 	const articlesError = useSelector(selectArticlesError);
 	const subcategories = useSelector(selectSubcategories);
 
@@ -39,7 +38,7 @@ const ArticlesBySubcatgeoryPage = () => {
 
 	useEffect(() => {
 		fetchArticlesBySubcategory();
-	}, [subcategory_slug,articles]);
+	}, [subcategory_slug, articles]);
 
 	useEffect(() => {
 		const subcategory_name = getSubcategoryNameById(
@@ -70,19 +69,19 @@ const ArticlesBySubcatgeoryPage = () => {
 	};
 
 	// Loading State
-	if (articlesLoading) {
-		return (
-			<div className='min-h-screen bg-gray-50 flex items-center justify-center'>
-				<div className='text-center'>
-					<Loader
-						className='animate-spin text-red-600 mx-auto mb-4'
-						size={48}
-					/>
-					<p className='text-gray-600 font-semibold'>Loading article...</p>
-				</div>
-			</div>
-		);
-	}
+	// if (articlesLoading) {
+	// 	return (
+	// 		<div className='min-h-screen bg-gray-50 flex items-center justify-center'>
+	// 			<div className='text-center'>
+	// 				<Loader
+	// 					className='animate-spin text-red-600 mx-auto mb-4'
+	// 					size={48}
+	// 				/>
+	// 				<p className='text-gray-600 font-semibold'>Loading article...</p>
+	// 			</div>
+	// 		</div>
+	// 	);
+	// }
 
 	// Error State
 	if (articlesError || subcategoryArticles.length === 0) {
@@ -94,7 +93,7 @@ const ArticlesBySubcatgeoryPage = () => {
 						No Articles Found
 					</h2>
 					<p className='text-gray-600 mb-6'>
-						{articlesError || 'The articles for this topic does not exist.'}
+						{'The articles for this topic does not exist.'}
 					</p>
 					<button
 						onClick={() => window.history.back()}

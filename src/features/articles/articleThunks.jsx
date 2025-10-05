@@ -8,14 +8,14 @@ export const fetchArticles = createAsyncThunk(
 			const data = await apiClient('/news/articles/');
 
 			// Pick only the required fields
-			const filteredData = data.map((article) => ({
+			const filteredData = data?.results.map((article) => ({
 				id: article.id,
 				title: article.title,
 				slug: article.slug,
 				summary: article.summary,
 				banner_image: article.banner_image,
 				category: article.category,
-				subcategory:article.subcategory
+				subcategory: article.subcategory,
 			}));
 
 			return filteredData;

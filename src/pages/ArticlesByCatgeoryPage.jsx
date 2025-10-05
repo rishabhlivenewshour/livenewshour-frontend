@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
 	selectArticles,
 	selectArticlesError,
-	selectArticlesLoading,
 } from '../features/articles/articleSelector';
 import { selectCategories } from '../features/categories/categorySelector';
 import { getCategoryNameById } from '../service/commonFunctions';
@@ -22,7 +21,7 @@ const ArticlesByCatgeoryPage = () => {
 	const { category_slug } = useParams();
 
 	const articles = useSelector(selectArticles);
-	const articlesLoading = useSelector(selectArticlesLoading);
+	// const articlesLoading = useSelector(selectArticlesLoading);
 	const articlesError = useSelector(selectArticlesError);
 	const categories = useSelector(selectCategories);
 
@@ -66,19 +65,19 @@ const ArticlesByCatgeoryPage = () => {
 	};
 
 	// Loading State
-	if (articlesLoading) {
-		return (
-			<div className='min-h-screen bg-gray-50 flex items-center justify-center'>
-				<div className='text-center'>
-					<Loader
-						className='animate-spin text-red-600 mx-auto mb-4'
-						size={48}
-					/>
-					<p className='text-gray-600 font-semibold'>Loading article...</p>
-				</div>
-			</div>
-		);
-	}
+	// if (articlesLoading) {
+	// 	return (
+	// 		<div className='min-h-screen bg-gray-50 flex items-center justify-center'>
+	// 			<div className='text-center'>
+	// 				<Loader
+	// 					className='animate-spin text-red-600 mx-auto mb-4'
+	// 					size={48}
+	// 				/>
+	// 				<p className='text-gray-600 font-semibold'>Loading article...</p>
+	// 			</div>
+	// 		</div>
+	// 	);
+	// }
 
 	// Error State
 	if (articlesError || categoryArticles.length === 0) {
@@ -90,7 +89,7 @@ const ArticlesByCatgeoryPage = () => {
 						No Articles Found
 					</h2>
 					<p className='text-gray-600 mb-6'>
-						{articlesError || 'The articles for this topic does not exist.'}
+						{'The articles for this topic does not exist.'}
 					</p>
 					<button
 						onClick={() => window.history.back()}

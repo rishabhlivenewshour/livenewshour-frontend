@@ -10,14 +10,24 @@ const HeroSection = () => {
 	const articles = useSelector(selectArticles);
 	const [breakingNews, setBreakingNews] = useState(null);
 
-	const fetchBreakingNews = async () => {
-		const response = await dispatch(fetchArticleById(articles[0]?.id)).unwrap();
-		setBreakingNews(response);
-	};
-
 	useEffect(() => {
-		articles[0] && fetchBreakingNews();
-	}, [articles]);
+		const fetchBreakingNews = async () => {
+			try {
+				if (articles.length > 0) {
+					const response = await dispatch(
+						fetchArticleById(articles[0].id)
+					).unwrap();
+					setBreakingNews(response);
+				}
+			} catch (error) {
+				console.error('Failed to fetch breaking news:', error);
+			}
+		};
+
+		if (articles.length > 0 && !breakingNews) {
+			fetchBreakingNews();
+		}
+	}, [articles, dispatch, breakingNews]);
 
 	return (
 		<div className='py-5 flex flex-col lg:flex-row gap-10 lg:gap-5'>

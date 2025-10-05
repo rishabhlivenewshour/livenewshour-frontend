@@ -4,14 +4,22 @@ import { FaSearch } from 'react-icons/fa';
 import { useDebounce } from '../hooks/useDebounce';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { selectArticles } from '../features/articles/articleSelector';
+import {
+	selectArticles,
+	selectArticlesError,
+	// selectArticlesLoading,
+} from '../features/articles/articleSelector';
 import { getCategoryNameById } from '../service/commonFunctions';
 import { selectCategories } from '../features/categories/categorySelector';
+import { Loader } from 'lucide-react';
 
 const SearchPage = () => {
 	const [searchParams, setSearchParams] = useSearchParams();
 
 	const articles = useSelector(selectArticles);
+	// const articlesLoading = useSelector(selectArticlesLoading);
+	const articlesError = useSelector(selectArticlesError);
+
 	const categories = useSelector(selectCategories);
 	const queryParam = searchParams.get('q') || '';
 	const [searchQuery, setSearchQuery] = useState(queryParam);
@@ -34,6 +42,44 @@ const SearchPage = () => {
 		setFilteredNews(results);
 		console.log('Filtered News:', results);
 	}, [debouncedSearchQuery, articles]);
+
+	// Loading State
+	// if (articlesLoading) {
+	// 	return (
+	// 		<div className='min-h-screen bg-gray-50 flex items-center justify-center'>
+	// 			<div className='text-center'>
+	// 				<Loader
+	// 					className='animate-spin text-red-600 mx-auto mb-4'
+	// 					size={48}
+	// 				/>
+	// 				<p className='text-gray-600 font-semibold'>Loading article...</p>
+	// 			</div>
+	// 		</div>
+	// 	);
+	// }
+
+	// Error State
+	if (articlesError || articles.length === 0) {
+		return (
+			<div className='min-h-screen bg-gray-50 flex items-center justify-center'>
+				<div className='text-center max-w-md'>
+					<div className='text-6xl mb-4'>📰</div>
+					<h2 className='text-2xl font-bold text-gray-800 mb-2'>
+						No Articles Found
+					</h2>
+					<p className='text-gray-600 mb-6'>
+						{'The articles for this topic does not exist.'}
+					</p>
+					<button
+						onClick={() => window.history.back()}
+						className='px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-semibold'
+					>
+						Go Back
+					</button>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className='py-5'>
