@@ -17,10 +17,20 @@ function App() {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		dispatch(fetchArticles());
 		dispatch(fetchCategoriesWithSubcategories());
 		dispatch(fetchSubcategories());
 	}, [dispatch]);
+
+	useEffect(() => {
+		dispatch(fetchArticles());
+
+		const interval = setInterval(() => {
+			dispatch(fetchArticles());
+		}, 120 * 1000); // 120 seconds
+
+		return () => clearInterval(interval);
+	}, [dispatch]);
+
 	return (
 		<BrowserRouter>
 			<ScrollToTop />

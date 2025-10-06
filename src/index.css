@@ -21,3 +21,44 @@ button {
 	background-color: #d10000;
 	color: #ffffff;
 }
+
+.editor-content h1 {
+	font-size: 2em !important;
+	font-weight: 700 !important;
+	margin: 0.67em 0 !important;
+	line-height: 1.2 !important;
+	display: block !important;
+}
+.editor-content h2 {
+	font-size: 1.5em !important;
+	font-weight: 700 !important;
+	margin: 0.75em 0 !important;
+	line-height: 1.3 !important;
+	display: block !important;
+}
+.editor-content h3 {
+	font-size: 1.25em !important;
+	font-weight: 700 !important;
+	margin: 0.83em 0 !important;
+	line-height: 1.4 !important;
+	display: block !important;
+}
+.editor-content h4 {
+	font-size: 1.1em !important;
+	font-weight: 700 !important;
+	margin: 1em 0 !important;
+	line-height: 1.5 !important;
+	display: block !important;
+}
+.editor-content p {
+	margin: 0.5em 0 !important;
+	line-height: 1.6 !important;
+	display: block !important;
+}
+.editor-content a {
+	color: #2563eb !important;
+	text-decoration: underline !important;
+}
+.editor-content a:hover {
+	color: #1d4ed8 !important;
+}

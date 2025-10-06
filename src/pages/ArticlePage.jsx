@@ -132,13 +132,13 @@ const ArticlePage = () => {
 					{/* Article Content */}
 					<article className='lg:col-span-2'>
 						{/* Breaking News Badge - Show if recently published */}
-						{article.published_at &&
-							new Date(article.published_at) >
-								new Date(Date.now() - 24 * 60 * 60 * 1000) && (
-								<div className='inline-block bg-red-600 text-white px-4 py-1 text-sm font-bold uppercase mb-4'>
-									Breaking News
-								</div>
-							)}
+						{article.tag && (
+							<div className='mb-4'>
+								<span className='inline-block px-4 py-1.5 bg-red-600 text-white text-sm font-bold rounded-md uppercase tracking-wide'>
+									{article.tag}
+								</span>
+							</div>
+						)}
 
 						{/* Title */}
 						<h1 className='text-4xl md:text-5xl font-bold leading-tight mb-4'>
@@ -154,11 +154,9 @@ const ArticlePage = () => {
 
 						{/* Metadata Bar */}
 						<div className='flex flex-wrap items-center gap-4 py-4 border-y border-gray-300 mb-6'>
-							<div className='flex items-center gap-2 text-sm text-gray-700'>
+							<div className='flex px-3 py-2 bg-blue-200 text-gray-800 text-xs font-semibold rounded'>
 								<User size={16} />
-								<span className='font-semibold'>
-									Author ID: {article.author}
-								</span>
+								<span className='font-semibold ml-2'>{article.author}</span>
 							</div>
 							<div className='flex items-center gap-2 text-sm text-gray-600'>
 								<Calendar size={16} />
@@ -171,7 +169,7 @@ const ArticlePage = () => {
 								<span>{calculateReadTime(article.content)} min read</span>
 							</div>
 							{article.is_published && (
-								<span className='px-2 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded'>
+								<span className='px-3 py-2 bg-green-200 text-green-800 text-xs font-semibold rounded'>
 									Published
 								</span>
 							)}
@@ -263,7 +261,7 @@ const ArticlePage = () => {
 						)}
 
 						{/* Article Content */}
-						<div className='prose prose-lg max-w-none mb-12'>
+						<div className='editor-content prose prose-lg max-w-none mb-12'>
 							<div
 								className='text-gray-800 leading-relaxed'
 								dangerouslySetInnerHTML={{
@@ -274,20 +272,14 @@ const ArticlePage = () => {
 
 						{/* Article Metadata */}
 						<div className='border-t border-gray-300 pt-6 mb-8'>
-							<div className='grid grid-cols-2 gap-4 text-sm'>
-								<div>
-									<span className='text-gray-500'>Category:</span>
-									<span className='ml-2 font-semibold'>
-										{getCategoryNameById(categories, article.category)}
-									</span>
-								</div>
-								<div>
-									<span className='text-gray-500'>Subcategory:</span>
-									<span className='ml-2 font-semibold'>
-										{getSubcategoryNameById(subcategories, article.subcategory)}
-									</span>
-								</div>
-								<div>
+							<div className='flex gap-5 text-sm text-gray-800 text-center'>
+								<p className='py-2 px-4 bg-blue-200 font-semibold rounded'>
+									{getCategoryNameById(categories, article.category)}
+								</p>
+								<p className='py-2 px-3 bg-blue-200 font-semibold rounded'>
+									{getSubcategoryNameById(subcategories, article.subcategory)}
+								</p>
+								{/* <div>
 									<span className='text-gray-500'>Created:</span>
 									<span className='ml-2 font-semibold'>
 										{formatDate(article.created_at)}
@@ -298,7 +290,7 @@ const ArticlePage = () => {
 									<span className='ml-2 font-semibold'>
 										{formatDate(article.updated_at)}
 									</span>
-								</div>
+								</div> */}
 							</div>
 						</div>
 					</article>
