@@ -36,3 +36,15 @@ export const fetchArticleById = createAsyncThunk(
 		}
 	}
 );
+
+export const fetchArticlesByCategory = createAsyncThunk(
+	'articles/fetchByCategory',
+	async (categoryId, { rejectWithValue }) => {
+		try {
+			const data = await apiClient(`/news/categories/${categoryId}/articles`);
+			return data.results;
+		} catch (error) {
+			return rejectWithValue(error.message);
+		}
+	}
+);

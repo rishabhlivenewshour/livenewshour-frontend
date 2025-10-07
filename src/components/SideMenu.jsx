@@ -1,18 +1,12 @@
-import { useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
-import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectCategories } from '../features/categories/categorySelector';
 
 const SideMenu = ({ setShowMenu }) => {
 	const location = useLocation().pathname;
-	const [expanded, setExpanded] = useState(null);
+	const navigate = useNavigate();
 
 	const categories = useSelector(selectCategories);
-
-	const toggle = (category) => {
-		setExpanded(expanded === category ? null : category);
-	};
 
 	return (
 		<aside className='sm:w-full sm:min-w-[250px] w-[100vw] h-fit min-h-screen overflow-y-auto bg-white shadow-lg tracking-wider'>
@@ -28,9 +22,15 @@ const SideMenu = ({ setShowMenu }) => {
 				</li>
 
 				{categories.map((category) => (
-					<li key={category.id} className='border-t'>
+					<li
+						key={category.id}
+						className={`border-t border-gray-300 ${
+							location.includes(category.slug) &&
+							'border-l-4 border-l-primary text-primary'
+						}`}
+					>
 						<button
-							onClick={() => toggle(category.name)}
+							onClick={() => navigate(`/news/${category.slug}`)}
 							className='w-full flex items-center justify-between gap-2'
 						>
 							<span
@@ -41,38 +41,7 @@ const SideMenu = ({ setShowMenu }) => {
 							>
 								{category.name}
 							</span>
-							{expanded === category.name ? (
-								<FaChevronUp size={12} />
-							) : (
-								<FaChevronDown size={12} />
-							)}
 						</button>
-
-						{expanded === category.name && (
-							<ul className='pl-3 pt-2 pb-1 space-y-1 font-normal text-light border-t'>
-								<li className='font-semibold p-1 hover:text-black cursor-pointer active:scale-95 transition-all duration-300 ease-in-out'>
-									<NavLink
-										to={`/news/${category.slug}`}
-										onClick={() => setShowMenu(false)}
-									>
-										{category.name}
-									</NavLink>
-								</li>
-								{category.subcategories?.map((sub) => (
-									<li
-										key={sub.id}
-										className='p-1 hover:text-black cursor-pointer active:scale-95 transition-all duration-300 ease-in-out'
-									>
-										<NavLink
-											to={`/news/${category.slug}/${sub.slug}`}
-											onClick={() => setShowMenu(false)}
-										>
-											{sub.name}
-										</NavLink>
-									</li>
-								))}
-							</ul>
-						)}
 					</li>
 				))}
 			</ul>

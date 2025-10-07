@@ -1,12 +1,7 @@
 import { Link } from 'react-router-dom';
 import Logo from '../assets/livenewshour.png';
-import {
-	FaFacebook,
-	FaInstagram,
-	FaLinkedin,
-	FaTwitter,
-	FaYoutube,
-} from 'react-icons/fa';
+import { FaFacebook, FaInstagram, FaLinkedin, FaYoutube } from 'react-icons/fa';
+import { FaXTwitter } from 'react-icons/fa6';
 import { processvalue } from '../utils/CommonFunctions';
 
 const Footer = () => {
@@ -109,12 +104,8 @@ const Footer = () => {
 						>
 							<FaFacebook size={25} className='text-primary hover:text-dark' />
 						</Link>
-						<Link
-							to='https://twitter.com'
-							target='_blank'
-							rel='noopener noreferrer'
-						>
-							<FaTwitter size={25} className='text-primary hover:text-dark' />
+						<Link to='https://x.com' target='_blank' rel='noopener noreferrer'>
+							<FaXTwitter size={25} className='text-primary hover:text-dark' />
 						</Link>
 						<Link
 							to='https://instagram.com'
@@ -141,7 +132,7 @@ const Footer = () => {
 				</div>
 			</div>
 			<div className='py-3 text-sm text-light border-t-2 text-center'>
-				<p>Copyright 2025 @NewsFactory - All Right Reserved.</p>
+				<p>Copyright 2025 @LiveNewsHour - All Right Reserved.</p>
 			</div>
 		</div>
 	);

@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
 	articles: [],
+	articlesByCategory: [],
 	loading: false,
 	error: null,
 };
@@ -35,6 +36,10 @@ const articleSlice = createSlice({
 		builder.addCase('articles/fetchById/rejected', (state, action) => {
 			state.loading = false;
 			state.error = action.payload;
+		});
+
+		builder.addCase('articles/fetchByCategory/fulfilled', (state, action) => {
+			state.articlesByCategory = action.payload;
 		});
 	},
 });

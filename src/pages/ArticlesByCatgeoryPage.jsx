@@ -1,83 +1,103 @@
-import { useEffect, useState } from 'react';
-
-import { useParams } from 'react-router-dom';
+import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
 	selectArticles,
 	selectArticlesError,
 } from '../features/articles/articleSelector';
 import { selectCategories } from '../features/categories/categorySelector';
-import { getCategoryNameById } from '../service/commonFunctions';
 import BreakingNews from '../components/BreakingNews';
 import { Loader } from 'lucide-react';
-import { fetchArticleById } from '../features/articles/articleThunks';
+import {
+	fetchArticleById,
+	fetchArticlesByCategory,
+} from '../features/articles/articleThunks';
 import NewsFeed from '../components/NewsFeed';
 
-const ArticlesByCatgeoryPage = () => {
+const ArticlesByCategoryPage = () => {
 	const dispatch = useDispatch();
-	const [categoryArticles, setCategoryArticles] = useState([]);
-	const [categoryName, setCategoryName] = useState('');
-	const [relatedArticles, setRelatedArticles] = useState([]);
+	const navigate = useNavigate();
 	const { category_slug } = useParams();
 
-	const articles = useSelector(selectArticles);
-	// const articlesLoading = useSelector(selectArticlesLoading);
-	const articlesError = useSelector(selectArticlesError);
-	const categories = useSelector(selectCategories);
-
-	let category_id = 1;
-
-	const fetchArticlesByCategory = () => {
-		category_id = categories.find((cat) => cat.slug === category_slug)?.id;
-		const filteredArticles = articles.filter(
-			(article) => article.category === category_id
-		);
-		setCategoryArticles(filteredArticles);
-	};
-
-	useEffect(() => {
-		fetchArticlesByCategory();
-	}, [category_slug, articles, categories]);
-
-	useEffect(() => {
-		const category_name = getCategoryNameById(categories, category_id);
-		setCategoryName(category_name);
-	}, [category_slug, category_id, categories]);
-
+	const [categoryArticles, setCategoryArticles] = useState([]);
 	const [breakingNews, setBreakingNews] = useState(null);
+	const [isLoading, setIsLoading] = useState(true);
 
-	const fetchBreakingNews = async () => {
-		const response = await dispatch(
-			fetchArticleById(categoryArticles[0]?.id)
-		).unwrap();
-		setBreakingNews(response);
-	};
+	const categories = useSelector(selectCategories);
+	const articles = useSelector(selectArticles);
+	const articlesError = useSelector(selectArticlesError);
 
+	// Memoize category lookup
+	const currentCategory = useMemo(
+		() => categories.find((cat) => cat.slug === category_slug),
+		[categories, category_slug]
+	);
+
+	const categoryId = currentCategory?.id;
+	const categoryName = currentCategory?.name || '';
+
+	// Memoize related articles calculation
+	const relatedArticles = useMemo(() => {
+		const firstArticleId = categoryArticles[0]?.id;
+		return articles.filter((a) => a.id !== firstArticleId).slice(0, 6);
+	}, [articles, categoryArticles]);
+
+	// Fetch articles by category
+	const loadCategoryArticles = useCallback(async () => {
+		if (!categoryId) return;
+
+		try {
+			setIsLoading(true);
+			const data = await dispatch(fetchArticlesByCategory(categoryId)).unwrap();
+			setCategoryArticles(data);
+		} catch (error) {
+			console.error('Failed to fetch category articles:', error);
+		} finally {
+			setIsLoading(false);
+		}
+	}, [categoryId, dispatch]);
+
+	// Fetch breaking news
+	const loadBreakingNews = useCallback(async () => {
+		const firstArticleId = categoryArticles[0]?.id;
+		if (!firstArticleId) return;
+
+		try {
+			const response = await dispatch(
+				fetchArticleById(firstArticleId)
+			).unwrap();
+			setBreakingNews(response);
+		} catch (error) {
+			console.error('Failed to fetch breaking news:', error);
+		}
+	}, [categoryArticles, dispatch]);
+
+	// Load category articles when slug changes
 	useEffect(() => {
-		categoryArticles[0] && fetchBreakingNews();
-		fetchRelatedArticles();
-	}, [categoryArticles]);
+		loadCategoryArticles();
+	}, [loadCategoryArticles]);
 
-	const fetchRelatedArticles = () => {
-		setRelatedArticles(
-			articles.filter((a) => a.id !== categoryArticles[0]?.id)
-		);
-	};
+	// Load breaking news when category articles change
+	useEffect(() => {
+		if (categoryArticles.length > 0) {
+			loadBreakingNews();
+		}
+	}, [categoryArticles.length, loadBreakingNews]);
 
 	// Loading State
-	// if (articlesLoading) {
-	// 	return (
-	// 		<div className='min-h-screen bg-gray-50 flex items-center justify-center'>
-	// 			<div className='text-center'>
-	// 				<Loader
-	// 					className='animate-spin text-red-600 mx-auto mb-4'
-	// 					size={48}
-	// 				/>
-	// 				<p className='text-gray-600 font-semibold'>Loading article...</p>
-	// 			</div>
-	// 		</div>
-	// 	);
-	// }
+	if (isLoading) {
+		return (
+			<div className='min-h-screen bg-gray-50 flex items-center justify-center'>
+				<div className='text-center'>
+					<Loader
+						className='animate-spin text-red-600 mx-auto mb-4'
+						size={48}
+					/>
+					<p className='text-gray-600 font-semibold'>Loading articles...</p>
+				</div>
+			</div>
+		);
+	}
 
 	// Error State
 	if (articlesError || categoryArticles.length === 0) {
@@ -89,10 +109,10 @@ const ArticlesByCatgeoryPage = () => {
 						No Articles Found
 					</h2>
 					<p className='text-gray-600 mb-6'>
-						{'The articles for this topic does not exist.'}
+						The articles for this topic do not exist.
 					</p>
 					<button
-						onClick={() => window.history.back()}
+						onClick={() => navigate(-1)}
 						className='px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-semibold'
 					>
 						Go Back
@@ -105,29 +125,32 @@ const ArticlesByCatgeoryPage = () => {
 	return (
 		<div className='pt-5 w-full flex justify-center'>
 			<div className='w-full lg:w-[60%] flex flex-col items-center'>
-				<div className='py-5'>
+				<div className='py-5 w-full'>
 					<h1 className='text-2xl font-semibold tracking-wider text-dark border-l-4 border-primary py-1 px-3 my-5 uppercase'>
 						{categoryName}
 					</h1>
-					<div className='w-full h-fit'>
-						<BreakingNews breakingNews={breakingNews} />
-					</div>
+					{breakingNews && (
+						<div className='w-full h-fit'>
+							<BreakingNews breakingNews={breakingNews} />
+						</div>
+					)}
 				</div>
 				<p className='h-[2px] bg-gray-200 w-full my-10'></p>
 				<NewsFeed
 					heading={`Latest ${categoryName} Stories`}
-					newsArray={[...categoryArticles].slice(0, 6)}
+					newsArray={categoryArticles?.slice(0, 6)}
 				/>
-				<p className='h-[2px] bg-gray-200 w-full my-10'></p>
-				<div className='mb-10'>
-					<NewsFeed
-						heading={`Related Stories`}
-						newsArray={[...relatedArticles].slice(0, 6)}
-					/>
-				</div>
+				{relatedArticles.length > 0 && (
+					<>
+						<p className='h-[2px] bg-gray-200 w-full my-10'></p>
+						<div className='mb-10 w-full'>
+							<NewsFeed heading='Related Stories' newsArray={relatedArticles} />
+						</div>
+					</>
+				)}
 			</div>
 		</div>
 	);
 };
 
-export default ArticlesByCatgeoryPage;
+export default ArticlesByCategoryPage;

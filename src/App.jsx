@@ -1,24 +1,24 @@
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ScrollToTop from './utils/ScrollToTop';
+
 import ArticlePage from './pages/ArticlePage';
 import ArticlesByCatgeoryPage from './pages/ArticlesByCatgeoryPage';
-import ArticlesBySubcatgeoryPage from './pages/ArticlesBySubcategoryPage';
-import { useEffect } from 'react';
-import { fetchCategoriesWithSubcategories } from './features/categories/categoryThunks';
-import { useDispatch } from 'react-redux';
-import { fetchSubcategories } from './features/subcategories/subcategoryThunks';
-import { fetchArticles } from './features/articles/articleThunks';
 import HomePage from './pages/HomePage';
 import SearchPage from './pages/SearchPage';
+
+import { fetchArticles } from './features/articles/articleThunks';
+import { fetchCategories } from './features/categories/categoryThunks';
 
 function App() {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		dispatch(fetchCategoriesWithSubcategories());
-		dispatch(fetchSubcategories());
+		dispatch(fetchCategories());
 	}, [dispatch]);
 
 	useEffect(() => {
@@ -43,10 +43,6 @@ function App() {
 					<Route
 						path='/news/:category_slug'
 						element={<ArticlesByCatgeoryPage />}
-					/>
-					<Route
-						path='/news/:category_slug/:subcategory_slug'
-						element={<ArticlesBySubcatgeoryPage />}
 					/>
 					<Route
 						path='/news/articles/:article_slug'

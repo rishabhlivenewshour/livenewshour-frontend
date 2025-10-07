@@ -11,6 +11,7 @@ import {
 	Clock,
 	Loader,
 } from 'lucide-react';
+import { FaXTwitter } from 'react-icons/fa6';
 import { Link, useParams } from 'react-router-dom';
 import { fetchArticleById } from '../features/articles/articleThunks';
 import { useSelector, useDispatch } from 'react-redux';
@@ -20,12 +21,8 @@ import {
 	selectArticlesLoading,
 } from '../features/articles/articleSelector';
 import { calculateReadTime, formatDate } from '../utils/CommonFunctions';
-import {
-	getCategoryNameById,
-	getSubcategoryNameById,
-} from '../service/commonFunctions';
+import { getCategoryNameById } from '../service/commonFunctions';
 import { selectCategories } from '../features/categories/categorySelector';
-import { selectSubcategories } from '../features/subcategories/subcatgeorySelector';
 
 const ArticlePage = () => {
 	const dispatch = useDispatch();
@@ -40,7 +37,6 @@ const ArticlePage = () => {
 	const articlesError = useSelector(selectArticlesError);
 
 	const categories = useSelector(selectCategories);
-	const subcategories = useSelector(selectSubcategories);
 
 	// API Configuration
 	let article_id = 1;
@@ -67,7 +63,7 @@ const ArticlePage = () => {
 
 		const shareUrls = {
 			facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
-			twitter: `https://twitter.com/intent/tweet?url=${url}&text=${text}`,
+			x: `https://x.com/intent/tweet?url=${url}&text=${text}`,
 			linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${url}`,
 			email: `mailto:?subject=${text}&body=${url}`,
 		};
@@ -168,11 +164,6 @@ const ArticlePage = () => {
 								<Clock size={16} />
 								<span>{calculateReadTime(article.content)} min read</span>
 							</div>
-							{article.is_published && (
-								<span className='px-3 py-2 bg-green-200 text-green-800 text-xs font-semibold rounded'>
-									Published
-								</span>
-							)}
 						</div>
 
 						{/* Action Buttons */}
@@ -197,11 +188,10 @@ const ArticlePage = () => {
 											Facebook
 										</button>
 										<button
-											onClick={() => shareArticle('twitter')}
+											onClick={() => shareArticle('x')}
 											className='w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition text-sm'
 										>
-											<Twitter size={18} className='text-sky-500' />
-											Twitter
+											<FaXTwitter size={18} className='text-sky-500' />x
 										</button>
 										<button
 											onClick={() => shareArticle('linkedin')}
@@ -275,9 +265,6 @@ const ArticlePage = () => {
 							<div className='flex gap-5 text-sm text-gray-800 text-center'>
 								<p className='py-2 px-4 bg-blue-200 font-semibold rounded'>
 									{getCategoryNameById(categories, article.category)}
-								</p>
-								<p className='py-2 px-3 bg-blue-200 font-semibold rounded'>
-									{getSubcategoryNameById(subcategories, article.subcategory)}
 								</p>
 								{/* <div>
 									<span className='text-gray-500'>Created:</span>
