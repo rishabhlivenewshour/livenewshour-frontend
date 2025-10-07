@@ -8,10 +8,7 @@ import {
 import { selectCategories } from '../features/categories/categorySelector';
 import BreakingNews from '../components/BreakingNews';
 import { Loader } from 'lucide-react';
-import {
-	fetchArticleById,
-	fetchArticlesByCategory,
-} from '../features/articles/articleThunks';
+import { fetchArticlesByCategory } from '../features/articles/articleThunks';
 import NewsFeed from '../components/NewsFeed';
 
 const ArticlesByCategoryPage = () => {
@@ -20,7 +17,6 @@ const ArticlesByCategoryPage = () => {
 	const { category_slug } = useParams();
 
 	const [categoryArticles, setCategoryArticles] = useState([]);
-	const [breakingNews, setBreakingNews] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
 
 	const categories = useSelector(selectCategories);
@@ -57,32 +53,10 @@ const ArticlesByCategoryPage = () => {
 		}
 	}, [categoryId, dispatch]);
 
-	// Fetch breaking news
-	const loadBreakingNews = useCallback(async () => {
-		const firstArticleId = categoryArticles[0]?.id;
-		if (!firstArticleId) return;
-
-		try {
-			const response = await dispatch(
-				fetchArticleById(firstArticleId)
-			).unwrap();
-			setBreakingNews(response);
-		} catch (error) {
-			console.error('Failed to fetch breaking news:', error);
-		}
-	}, [categoryArticles, dispatch]);
-
 	// Load category articles when slug changes
 	useEffect(() => {
 		loadCategoryArticles();
 	}, [loadCategoryArticles]);
-
-	// Load breaking news when category articles change
-	useEffect(() => {
-		if (categoryArticles.length > 0) {
-			loadBreakingNews();
-		}
-	}, [categoryArticles.length, loadBreakingNews]);
 
 	// Loading State
 	if (isLoading) {
@@ -129,17 +103,19 @@ const ArticlesByCategoryPage = () => {
 					<h1 className='text-2xl font-semibold tracking-wider text-dark border-l-4 border-primary py-1 px-3 my-5 uppercase'>
 						{categoryName}
 					</h1>
-					{breakingNews && (
+					{categoryArticles[0] && (
 						<div className='w-full h-fit'>
-							<BreakingNews breakingNews={breakingNews} />
+							<BreakingNews breakingNews={categoryArticles[0]} />
 						</div>
 					)}
 				</div>
 				<p className='h-[2px] bg-gray-200 w-full my-10'></p>
-				<NewsFeed
-					heading={`Latest ${categoryName} Stories`}
-					newsArray={categoryArticles?.slice(0, 6)}
-				/>
+				{categoryArticles.length > 1 && (
+					<NewsFeed
+						heading={`Latest ${categoryName} Stories`}
+						newsArray={categoryArticles?.slice(1, 10)}
+					/>
+				)}
 				{relatedArticles.length > 0 && (
 					<>
 						<p className='h-[2px] bg-gray-200 w-full my-10'></p>

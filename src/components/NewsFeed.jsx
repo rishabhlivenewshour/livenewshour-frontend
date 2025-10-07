@@ -6,7 +6,7 @@ import { selectCategories } from '../features/categories/categorySelector';
 const NewsFeed = ({ heading, newsArray }) => {
 	const categories = useSelector(selectCategories);
 	return (
-		<div>
+		<div className=''>
 			<h1 className='text-xl font-semibold tracking-wider text-dark border-l-4 border-primary py-0.5 px-3 mb-5 uppercase'>
 				{heading}
 			</h1>
@@ -15,16 +15,17 @@ const NewsFeed = ({ heading, newsArray }) => {
 					<Link
 						to={`/news/articles/${article.slug}`}
 						key={article.id}
-						className='flex flex-col gap-2 hover:bg-gray-100 rounded transition-all duration-300 ease-in-out py-1 px-1'
+						className='flex flex-col gap-2 hover:bg-gray-100 rounded transition-all duration-300 ease-in-out'
 					>
 						<div className='flex gap-2'>
 							<img
 								src={article.banner_image}
 								alt='Featured article'
-								className='w-full h-[100px] object-cover rounded'
+								className='w-full h-[200px] object-cover rounded'
 							/>
-							<h2 className='font-semibold'>{article.title}</h2>
 						</div>
+
+						<h2 className='font-semibold'>{article.title}</h2>
 						<div className=''>
 							<p className='w-full text-sm text-light h-15 overflow-hidden line-clamp-3'>
 								{article.summary}

@@ -37,7 +37,7 @@ function App() {
 			<div className='fixed w-[100vw] mt-[-64px] lg:mt-[-106px] z-[999]'>
 				<Navbar />
 			</div>
-			<div className='mt-[64px] lg:mt-[106px] px-[5vw] sm:px-[15vw]'>
+			<div className='mt-[64px] lg:mt-[106px] px-[5vw] sm:px-[14vw]'>
 				<Routes>
 					<Route path='/' element={<HomePage />} />
 					<Route

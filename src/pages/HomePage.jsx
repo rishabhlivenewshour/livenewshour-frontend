@@ -6,29 +6,14 @@ import {
 	selectArticles,
 	selectArticlesError,
 } from '../features/articles/articleSelector';
-import { Loader } from 'lucide-react';
+import NewsFeedByCategory from '../components/NewsFeedByCategory';
+import { selectCategories } from '../features/categories/categorySelector';
 
 const HomePage = () => {
 	const articles = useSelector(selectArticles);
-	// const articlesLoading = useSelector(selectArticlesLoading);
+	const categories = useSelector(selectCategories);
 	const articlesError = useSelector(selectArticlesError);
 
-	// // Loading State
-	// if (articlesLoading) {
-	// 	return (
-	// 		<div className='min-h-screen bg-gray-50 flex items-center justify-center'>
-	// 			<div className='text-center'>
-	// 				<Loader
-	// 					className='animate-spin text-red-600 mx-auto mb-4'
-	// 					size={48}
-	// 				/>
-	// 				<p className='text-gray-600 font-semibold'>Loading article...</p>
-	// 			</div>
-	// 		</div>
-	// 	);
-	// }
-
-	// // Error State
 	if (articlesError || articles.length === 0) {
 		return (
 			<div className='min-h-screen bg-gray-50 flex items-center justify-center'>
@@ -45,6 +30,8 @@ const HomePage = () => {
 		);
 	}
 
+	const total_categories = categories.length;
+
 	return (
 		<div className=''>
 			<div className='pt-5'>
@@ -56,16 +43,15 @@ const HomePage = () => {
 			<p className='h-[2px] bg-gray-200 w-full my-10'></p>
 			<div className='flex flex-col lg:flex-row gap-5 pt-5 pb-16'>
 				<div className='w-full lg:w-[20%] flex flex-row lg:flex-col gap-10'>
-					<SideNewsFeed category='Technology' categoryId={2} />
-					<div className='mt-0 lg:mt-36'>
-						<SideNewsFeed category='Security' categoryId={3} />
-					</div>
+					{categories.slice(total_categories / 2).map((category) => (
+						<NewsFeedByCategory key={category.id} category={category} />
+					))}
 				</div>
 				<p className='block lg:hidden h-[2px] bg-gray-200 w-full my-10'></p>
 				<div className='w-full lg:w-[60%]'>
 					<NewsFeed
 						heading='Latest Stories'
-						newsArray={[...articles].slice(0, 6)}
+						newsArray={[...articles].slice(1, 7)}
 					/>
 					<p className='h-[2px] bg-gray-200 w-full my-10'></p>
 					<NewsFeed
@@ -75,10 +61,9 @@ const HomePage = () => {
 				</div>
 				<p className='block lg:hidden h-[2px] bg-gray-200 w-full my-10'></p>
 				<div className='w-full lg:w-[20%] flex flex-row lg:flex-col gap-10'>
-					<SideNewsFeed category='Business' categoryId={7} />
-					<div className='mt-0 lg:mt-36'>
-						<SideNewsFeed category='Science' categoryId={5} />
-					</div>
+					{categories.slice(0, total_categories / 2).map((category) => (
+						<NewsFeedByCategory key={category.id} category={category} />
+					))}
 				</div>
 			</div>
 		</div>

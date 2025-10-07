@@ -15,7 +15,6 @@ export const fetchArticles = createAsyncThunk(
 				summary: article.summary,
 				banner_image: article.banner_image,
 				category: article.category,
-				subcategory: article.subcategory,
 			}));
 
 			return filteredData;
@@ -41,8 +40,31 @@ export const fetchArticlesByCategory = createAsyncThunk(
 	'articles/fetchByCategory',
 	async (categoryId, { rejectWithValue }) => {
 		try {
-			const data = await apiClient(`/news/categories/${categoryId}/articles`);
+			const data = await apiClient(`/news/categories/${categoryId}/articles/`);
 			return data.results;
+		} catch (error) {
+			return rejectWithValue(error.message);
+		}
+	}
+);
+
+export const fetchArticlesBySearch = createAsyncThunk(
+	'articles/fetchBySearch',
+	async (searchQuery, { rejectWithValue }) => {
+		try {
+			const data = await apiClient(`/news/articles/?search=${searchQuery}`);
+
+			// Pick only the required fields
+			const filteredData = data?.results.map((article) => ({
+				id: article.id,
+				title: article.title,
+				slug: article.slug,
+				summary: article.summary,
+				banner_image: article.banner_image,
+				category: article.category,
+			}));
+
+			return filteredData;
 		} catch (error) {
 			return rejectWithValue(error.message);
 		}

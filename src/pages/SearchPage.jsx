@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
-import SideNewsFeed from '../components/SideNewsFeed';
 import { FaSearch } from 'react-icons/fa';
 import { useDebounce } from '../hooks/useDebounce';
 import { Link, useSearchParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
 	selectArticles,
 	selectArticlesError,
@@ -11,13 +10,14 @@ import {
 } from '../features/articles/articleSelector';
 import { getCategoryNameById } from '../service/commonFunctions';
 import { selectCategories } from '../features/categories/categorySelector';
-import { Loader } from 'lucide-react';
+import NewsFeedByCategory from '../components/NewsFeedByCategory';
+import { fetchArticlesBySearch } from '../features/articles/articleThunks';
 
 const SearchPage = () => {
+	const dispatch = useDispatch();
 	const [searchParams, setSearchParams] = useSearchParams();
 
 	const articles = useSelector(selectArticles);
-	// const articlesLoading = useSelector(selectArticlesLoading);
 	const articlesError = useSelector(selectArticlesError);
 
 	const categories = useSelector(selectCategories);
@@ -32,33 +32,19 @@ const SearchPage = () => {
 		setSearchParams({ q: value });
 	};
 
-	useEffect(() => {
+	const fetchArticles = async () => {
 		const searchTerm = debouncedSearchQuery?.toLowerCase();
-		const results = !searchTerm
-			? articles.slice(0, 3)
-			: articles.filter((article) =>
-					article.title.toLowerCase().includes(searchTerm)
-			  );
-		setFilteredNews(results);
-		console.log('Filtered News:', results);
+		if (searchTerm) {
+			const data = await dispatch(fetchArticlesBySearch(searchTerm)).unwrap();
+			setFilteredNews(data);
+		}
+	};
+	useEffect(() => {
+		debouncedSearchQuery && fetchArticles();
 	}, [debouncedSearchQuery, articles]);
 
-	// Loading State
-	// if (articlesLoading) {
-	// 	return (
-	// 		<div className='min-h-screen bg-gray-50 flex items-center justify-center'>
-	// 			<div className='text-center'>
-	// 				<Loader
-	// 					className='animate-spin text-red-600 mx-auto mb-4'
-	// 					size={48}
-	// 				/>
-	// 				<p className='text-gray-600 font-semibold'>Loading article...</p>
-	// 			</div>
-	// 		</div>
-	// 	);
-	// }
+	const total_categories = categories.length;
 
-	// Error State
 	if (articlesError || articles.length === 0) {
 		return (
 			<div className='min-h-screen bg-gray-50 flex items-center justify-center'>
@@ -86,10 +72,9 @@ const SearchPage = () => {
 			<div className='flex flex-col lg:flex-row gap-10 pt-5 pb-16 tracking-wide'>
 				<p className='block lg:hidden h-[2px] bg-gray-200 w-full my-10'></p>
 				<div className='w-full lg:w-[25%] flex flex-row lg:flex-col gap-10'>
-					<SideNewsFeed category='Technology' categoryId={2} />
-					<div className='mt-0 lg:mt-36'>
-						<SideNewsFeed category='Security' categoryId={3} />
-					</div>
+					{categories.slice(total_categories / 2).map((category) => (
+						<NewsFeedByCategory key={category.id} category={category} />
+					))}
 				</div>
 				<div className='w-full lg:w-[50%] flex flex-col -order-1 lg:order-none'>
 					<div className='flex flex-col gap-2 w-full'>
@@ -146,7 +131,7 @@ const SearchPage = () => {
 										Read Latest news
 									</h1>
 									<div className='flex flex-col gap-5'>
-										{articles.slice(0, 4).map((article) => (
+										{articles.slice(0, 5).map((article) => (
 											<Link
 												to={`/news/articles/${article.slug}`}
 												key={article.id}
@@ -176,10 +161,9 @@ const SearchPage = () => {
 				</div>
 				<p className='block lg:hidden h-[2px] bg-gray-200 w-full my-10'></p>
 				<div className='w-full lg:w-[25%] flex flex-row lg:flex-col gap-10'>
-					<SideNewsFeed category='Business' categoryId={7} />
-					<div className='mt-0 lg:mt-36'>
-						<SideNewsFeed category='Science' categoryId={5} />
-					</div>
+					{categories.slice(0, total_categories / 2).map((category) => (
+						<NewsFeedByCategory key={category.id} category={category} />
+					))}
 				</div>
 			</div>
 		</div>

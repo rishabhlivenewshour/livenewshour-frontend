@@ -10,6 +10,7 @@ import {
 	Bookmark,
 	Clock,
 	Loader,
+	Tag,
 } from 'lucide-react';
 import { FaXTwitter } from 'react-icons/fa6';
 import { Link, useParams } from 'react-router-dom';
@@ -150,6 +151,14 @@ const ArticlePage = () => {
 
 						{/* Metadata Bar */}
 						<div className='flex flex-wrap items-center gap-4 py-4 border-y border-gray-300 mb-6'>
+							{article.category && (
+								<div className='flex px-3 py-2 bg-green-200 text-green-800 text-xs font-semibold rounded'>
+									<Tag size={16} />
+									<span className='font-semibold ml-2'>
+										{getCategoryNameById(categories, article.category)}
+									</span>
+								</div>
+							)}
 							<div className='flex px-3 py-2 bg-blue-200 text-gray-800 text-xs font-semibold rounded'>
 								<User size={16} />
 								<span className='font-semibold ml-2'>{article.author}</span>
@@ -261,25 +270,21 @@ const ArticlePage = () => {
 						</div>
 
 						{/* Article Metadata */}
-						<div className='border-t border-gray-300 pt-6 mb-8'>
-							<div className='flex gap-5 text-sm text-gray-800 text-center'>
-								<p className='py-2 px-4 bg-blue-200 font-semibold rounded'>
-									{getCategoryNameById(categories, article.category)}
-								</p>
-								{/* <div>
-									<span className='text-gray-500'>Created:</span>
-									<span className='ml-2 font-semibold'>
-										{formatDate(article.created_at)}
-									</span>
+						{article.related_keywords && (
+							<div className='border-t border-gray-300 pt-6 mb-8 flex flex-wrap gap-4'>
+								<p className='text-sm tracking-wide'>Related Keywords:</p>
+								<div className='text-sm'>
+									{article.related_keywords.map((keyword) => (
+										<span
+											key={keyword}
+											className='mr-2 px-2 py-1 bg-gray-200 rounded text-gray-800'
+										>
+											{keyword}
+										</span>
+									))}
 								</div>
-								<div>
-									<span className='text-gray-500'>Updated:</span>
-									<span className='ml-2 font-semibold'>
-										{formatDate(article.updated_at)}
-									</span>
-								</div> */}
 							</div>
-						</div>
+						)}
 					</article>
 
 					{/* Sidebar */}
