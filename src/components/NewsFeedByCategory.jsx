@@ -46,9 +46,9 @@ const NewsFeedByCategory = ({ category }) => {
 					<img
 						src={categoryArticles[0].banner_image}
 						alt={categoryArticles[0].title}
-						className='w-full h-auto'
+						className='w-full h-auto max-w-[300px]'
 					/>
-					<h2 className='text-sm font-[500] group-hover:text-primary'>
+					<h2 className='text-sm font-[500]  max-w-[300px] group-hover:text-primary'>
 						{categoryArticles[0].title}
 					</h2>
 				</Link>
@@ -58,7 +58,7 @@ const NewsFeedByCategory = ({ category }) => {
 						key={article.id}
 						className='flex flex-col gap-2 py-1.5 rounded hover:text-primary border-t border-gray-300 transition-all duration-150 ease-in-out'
 					>
-						<h2 className='text-[15px] font-[400] mt-2'>{article.title}</h2>
+						<h2 className='text-[15px] font-[400]  max-w-[300px] mt-2'>{article.title}</h2>
 					</Link>
 				))}
 			</div>

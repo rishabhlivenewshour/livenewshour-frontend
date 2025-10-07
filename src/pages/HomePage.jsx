@@ -42,13 +42,13 @@ const HomePage = () => {
 			</div>
 			<p className='h-[2px] bg-gray-200 w-full my-10'></p>
 			<div className='flex flex-col lg:flex-row gap-5 pt-5 pb-16'>
-				<div className='w-full lg:w-[20%] flex flex-row lg:flex-col gap-10'>
+				<div className='w-full lg:w-[20%] flex flex-row lg:flex-col flex-wrap lg:flex-nowrap gap-10 order-2 lg:order-1'>
 					{categories.slice(total_categories / 2).map((category) => (
 						<NewsFeedByCategory key={category.id} category={category} />
 					))}
 				</div>
-				<p className='block lg:hidden h-[2px] bg-gray-200 w-full my-10'></p>
-				<div className='w-full lg:w-[60%]'>
+				{/* <p className='block lg:hidden h-[2px] bg-gray-200 w-full my-10'></p> */}
+				<div className='w-full lg:w-[60%] order-1 lg:order-2'>
 					<NewsFeed
 						heading='Latest Stories'
 						newsArray={[...articles].slice(1, 7)}
@@ -59,8 +59,8 @@ const HomePage = () => {
 						newsArray={[...articles].reverse().slice(1, 6)}
 					/>
 				</div>
-				<p className='block lg:hidden h-[2px] bg-gray-200 w-full my-10'></p>
-				<div className='w-full lg:w-[20%] flex flex-row lg:flex-col gap-10'>
+				{/* <p className='block lg:hidden h-[2px] bg-gray-200 w-full my-10'></p> */}
+				<div className='w-full lg:w-[20%] flex flex-row lg:flex-col gap-10 order-3 lg:order-3'>
 					{categories.slice(0, total_categories / 2).map((category) => (
 						<NewsFeedByCategory key={category.id} category={category} />
 					))}
