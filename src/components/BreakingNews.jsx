@@ -4,6 +4,7 @@ import { Loader } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { selectCategories } from '../features/categories/categorySelector';
 import { getCategoryNameById } from '../service/commonFunctions';
+import OptimizedImage from './OptimizedImage';
 
 const BreakingNews = ({ breakingNews }) => {
 	const categories = useSelector(selectCategories);
@@ -17,14 +18,17 @@ const BreakingNews = ({ breakingNews }) => {
 				>
 					<img
 						src={breakingNews.banner_image}
-						alt='Featured article'
-						className='w-[100%] h-[320px] object-cover rounded'
+						alt={breakingNews.title}
+						className='w-full h-[320px] object-cover rounded'
+						onError={(e) => {
+							e.target.style.display = 'none';
+						}}
 					/>
 					<div className='mt-2'>
-						<h2 className='font-semibold text-xl tracking-wider'>
+						<h2 className='w-full font-semibold text-xl tracking-wider '>
 							{breakingNews.title}
 						</h2>
-						<p className='w-full text-base text-light h-13 overflow-hidden line-clamp-2'>
+						<p className='w-[90%] text-base text-light h-13 overflow-hidden line-clamp-2'>
 							{breakingNews.summary}
 						</p>
 					</div>

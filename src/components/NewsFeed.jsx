@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { getCategoryNameById } from '../service/commonFunctions';
 import { useSelector } from 'react-redux';
 import { selectCategories } from '../features/categories/categorySelector';
+import OptimizedImage from './OptimizedImage';
 
 const NewsFeed = ({ heading, newsArray }) => {
 	const categories = useSelector(selectCategories);
@@ -18,10 +19,13 @@ const NewsFeed = ({ heading, newsArray }) => {
 						className='flex flex-col gap-2 hover:bg-gray-100 rounded transition-all duration-300 ease-in-out'
 					>
 						<div className='flex gap-2'>
-							<img
+							<OptimizedImage
 								src={article.banner_image}
-								alt='Featured article'
+								alt={article.title}
 								className='w-full h-[200px] object-cover rounded'
+								onError={(e) => {
+									e.target.style.display = 'none';
+								}}
 							/>
 						</div>
 

@@ -8,6 +8,10 @@ const SideMenu = ({ setShowMenu }) => {
 
 	const categories = useSelector(selectCategories);
 
+	const handleClick = (category_slug) => {
+		navigate(`/news/${category_slug}`);
+		setShowMenu(false);
+	};
 	return (
 		<aside className='sm:w-full sm:min-w-[250px] w-[100vw] h-fit min-h-screen overflow-y-auto bg-white shadow-lg tracking-wider'>
 			<ul className='text-sm font-semibold pr-3 pl-1'>
@@ -21,16 +25,16 @@ const SideMenu = ({ setShowMenu }) => {
 					</NavLink>
 				</li>
 
-				{categories.map((category) => (
+				{categories.map((category, index) => (
 					<li
-						key={category.id}
+						key={index}
 						className={`border-t border-gray-300 ${
 							location.includes(category.slug) &&
 							'border-l-4 border-l-primary text-primary'
 						}`}
 					>
 						<button
-							onClick={() => navigate(`/news/${category.slug}`)}
+							onClick={() => handleClick(category.slug)}
 							className='w-full flex items-center justify-between gap-2'
 						>
 							<span

@@ -1,72 +1,127 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
 	Calendar,
 	User,
 	Share2,
 	Facebook,
-	Twitter,
 	Linkedin,
 	Mail,
 	Bookmark,
 	Clock,
 	Loader,
 	Tag,
+	createLucideIcon,
 } from 'lucide-react';
-import { FaXTwitter } from 'react-icons/fa6';
 import { Link, useParams } from 'react-router-dom';
-import { fetchArticleById } from '../features/articles/articleThunks';
+import { fetchArticleByCategorySlug } from '../features/articles/articleThunks';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-	selectArticles,
 	selectArticlesError,
 	selectArticlesLoading,
 } from '../features/articles/articleSelector';
 import { calculateReadTime, formatDate } from '../utils/CommonFunctions';
 import { getCategoryNameById } from '../service/commonFunctions';
 import { selectCategories } from '../features/categories/categorySelector';
+import { cacheArticle } from '../features/articles/articleSlice';
+import OptimizedImage from '../components/OptimizedImage';
+
+const XIcon = createLucideIcon('X', [
+	[
+		'path',
+		{
+			key: 'path1',
+			d: 'M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z',
+			stroke: 'none',
+			fill: 'currentColor',
+		},
+	],
+]);
 
 const ArticlePage = () => {
 	const dispatch = useDispatch();
+	const { article_slug } = useParams();
+
 	const [article, setArticle] = useState(null);
 	const [relatedArticles, setRelatedArticles] = useState([]);
 	const [isBookmarked, setIsBookmarked] = useState(false);
 	const [showShareMenu, setShowShareMenu] = useState(false);
 
-	const { article_slug } = useParams();
-	const articles = useSelector(selectArticles);
 	const articlesLoading = useSelector(selectArticlesLoading);
 	const articlesError = useSelector(selectArticlesError);
-
 	const categories = useSelector(selectCategories);
 
-	// API Configuration
-	let article_id = 1;
-
+	// Fetch article
 	useEffect(() => {
+		const fetchArticle = async () => {
+			try {
+				// Try to get article ID from URL slug (you might need to add an endpoint for this)
+				// For now, we'll fetch by ID if available
+				const response = await dispatch(
+					fetchArticleByCategorySlug(article_slug)
+				).unwrap();
+				setArticle(response);
+				dispatch(cacheArticle(response));
+			} catch (error) {
+				console.error('Failed to fetch article:', error);
+			}
+		};
+
 		fetchArticle();
-		fetchRelatedArticles();
-	}, [article_id, article_slug, articles, dispatch]);
+	}, [article_slug, dispatch]);
 
-	const fetchArticle = async () => {
-		article_id = articles.find((art) => art.slug === article_slug)?.id;
-		const found_article = await dispatch(fetchArticleById(article_id)).unwrap();
+	// Fetch related articles (limit to 3)
+	useEffect(() => {
+		const fetchRelatedArticles = async () => {
+			if (article?.category) {
+				try {
+					// You'll need to create an endpoint that excludes current article
+					// For now, using a simple approach
+					const response = await fetch(
+						`${import.meta.env.VITE_BACKEND_URL}/news/categories/${
+							article.category
+						}/articles/?page_size=4`
+					);
+					const data = await response.json();
+					const filtered = data.results
+						.filter((a) => a.id !== article.id)
+						.slice(0, 3);
+					setRelatedArticles(filtered);
+				} catch (error) {
+					console.error('Failed to fetch related articles:', error);
+				}
+			}
+		};
 
-		setArticle(found_article);
-	};
+		if (article) {
+			fetchRelatedArticles();
+		}
+	}, [article]);
 
-	const fetchRelatedArticles = async () => {
-		setRelatedArticles(articles.filter((a) => a.id !== article_id));
-	};
+	// Check bookmarked status from localStorage
+	useEffect(() => {
+		if (article?.id) {
+			const bookmarked = localStorage.getItem(`bookmark_${article.id}`);
+			setIsBookmarked(bookmarked === 'true');
+		}
+	}, [article?.id]);
 
 	const shareArticle = (platform) => {
 		const url = window.location.href;
 		const text = article?.title || '';
 
 		const shareUrls = {
-			facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
-			x: `https://x.com/intent/tweet?url=${url}&text=${text}`,
-			linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${url}`,
-			email: `mailto:?subject=${text}&body=${url}`,
+			facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+				url
+			)}`,
+			x: `https://x.com/intent/tweet?url=${encodeURIComponent(
+				url
+			)}&text=${encodeURIComponent(text)}`,
+			linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+				url
+			)}`,
+			email: `mailto:?subject=${encodeURIComponent(
+				text
+			)}&body=${encodeURIComponent(url)}`,
 		};
 
 		if (shareUrls[platform]) {
@@ -74,6 +129,22 @@ const ArticlePage = () => {
 		}
 		setShowShareMenu(false);
 	};
+
+	const handleBookmark = () => {
+		const newBookmarkState = !isBookmarked;
+		setIsBookmarked(newBookmarkState);
+		localStorage.setItem(`bookmark_${article.id}`, newBookmarkState.toString());
+	};
+
+	// Memoized content formatter
+	const formattedContent = useMemo(() => {
+		if (!article?.content) return '';
+		return article.content
+			.replace(/\\"/g, '"')
+			.split('\n\n')
+			.map((p) => `<p>${p}</p>`)
+			.join('</br>');
+	}, [article?.content]);
 
 	// Loading State
 	if (articlesLoading) {
@@ -113,22 +184,11 @@ const ArticlePage = () => {
 		);
 	}
 
-	const formattedContent = (content) => {
-		return content
-			.replace(/\\"/g, '"') // fix quotes
-			.split('\n\n') // split paragraphs
-			.map((p) => `<p>${p}</p>`)
-			.join('</br>');
-	};
-
 	return (
 		<div className='min-h-screen bg-gray-50'>
-			{/* Main Content */}
 			<main className='max-w-7xl mx-auto px-4 py-8'>
 				<div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
-					{/* Article Content */}
 					<article className='lg:col-span-2'>
-						{/* Breaking News Badge - Show if recently published */}
 						{article.tag && (
 							<div className='mb-4'>
 								<span className='inline-block px-4 py-1.5 bg-red-600 text-white text-sm font-bold rounded-md uppercase tracking-wide'>
@@ -137,19 +197,16 @@ const ArticlePage = () => {
 							</div>
 						)}
 
-						{/* Title */}
 						<h1 className='text-4xl md:text-5xl font-bold leading-tight mb-4'>
 							{article.title}
 						</h1>
 
-						{/* Summary as Subtitle */}
 						{article.summary && (
 							<h2 className='text-xl md:text-2xl text-gray-600 font-normal mb-6'>
 								{article.summary}
 							</h2>
 						)}
 
-						{/* Metadata Bar */}
 						<div className='flex flex-wrap items-center gap-4 py-4 border-y border-gray-300 mb-6'>
 							{article.category && (
 								<div className='flex px-3 py-2 bg-green-200 text-green-800 text-xs font-semibold rounded'>
@@ -175,7 +232,6 @@ const ArticlePage = () => {
 							</div>
 						</div>
 
-						{/* Action Buttons */}
 						<div className='flex items-center gap-3 mb-8'>
 							<div className='relative'>
 								<button
@@ -186,7 +242,6 @@ const ArticlePage = () => {
 									Share
 								</button>
 
-								{/* Share Menu */}
 								{showShareMenu && (
 									<div className='absolute top-full left-0 mt-2 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-10 min-w-[160px]'>
 										<button
@@ -200,7 +255,7 @@ const ArticlePage = () => {
 											onClick={() => shareArticle('x')}
 											className='w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition text-sm'
 										>
-											<FaXTwitter size={18} className='text-sky-500' />x
+											<XIcon size={18} className='text-sky-500' />X
 										</button>
 										<button
 											onClick={() => shareArticle('linkedin')}
@@ -221,7 +276,7 @@ const ArticlePage = () => {
 							</div>
 
 							<button
-								onClick={() => setIsBookmarked(!isBookmarked)}
+								onClick={handleBookmark}
 								className={`flex items-center gap-2 px-4 py-2 rounded border transition text-sm font-semibold ${
 									isBookmarked
 										? 'bg-red-50 border-red-600 text-red-600'
@@ -236,10 +291,9 @@ const ArticlePage = () => {
 							</button>
 						</div>
 
-						{/* Banner Image */}
 						{article.banner_image && (
 							<figure className='mb-8'>
-								<img
+								<OptimizedImage
 									src={article.banner_image}
 									alt={article.title}
 									className='w-full h-auto rounded-lg shadow-lg'
@@ -250,53 +304,41 @@ const ArticlePage = () => {
 							</figure>
 						)}
 
-						{/* Article Summary Highlight */}
-						{article.summary && (
-							<div className='bg-gray-100 border-l-4 border-red-600 p-6 mb-8 rounded-r'>
-								<p className='text-lg font-semibold leading-relaxed'>
-									{article.summary}
-								</p>
-							</div>
-						)}
-
-						{/* Article Content */}
 						<div className='editor-content prose prose-lg max-w-none mb-12'>
 							<div
 								className='text-gray-800 leading-relaxed'
 								dangerouslySetInnerHTML={{
-									__html: formattedContent(article.content),
+									__html: formattedContent,
 								}}
 							/>
 						</div>
 
-						{/* Article Metadata */}
-						{article.related_keywords && (
-							<div className='border-t border-gray-300 pt-6 mb-8 flex flex-wrap gap-4'>
-								<p className='text-sm tracking-wide'>Related Keywords:</p>
-								<div className='text-sm'>
-									{article.related_keywords.map((keyword) => (
-										<span
-											key={keyword}
-											className='mr-2 px-2 py-1 bg-gray-200 rounded text-gray-800'
-										>
-											{keyword}
-										</span>
-									))}
+						{article.related_keywords &&
+							article.related_keywords.length > 0 && (
+								<div className='border-t border-gray-300 pt-6 mb-8 flex flex-wrap gap-4'>
+									<p className='text-sm tracking-wide'>Related Keywords:</p>
+									<div className='text-sm'>
+										{article.related_keywords.map((keyword, index) => (
+											<span
+												key={`${keyword}-${index}`}
+												className='mr-2 px-2 py-1 bg-gray-200 rounded text-gray-800'
+											>
+												{keyword}
+											</span>
+										))}
+									</div>
 								</div>
-							</div>
-						)}
+							)}
 					</article>
 
-					{/* Sidebar */}
 					<aside className='space-y-8'>
-						{/* Related Articles */}
 						{relatedArticles.length > 0 && (
 							<div className='bg-white border border-gray-300 rounded-lg overflow-hidden'>
 								<div className='bg-gray-100 px-4 py-3 border-b border-gray-300'>
 									<h3 className='font-bold text-lg'>Related Articles</h3>
 								</div>
 								<div className='divide-y divide-gray-200'>
-									{relatedArticles.slice(0, 3).map((related) => (
+									{relatedArticles.map((related) => (
 										<Link
 											key={related.id}
 											to={`/news/articles/${related.slug}`}
@@ -304,7 +346,7 @@ const ArticlePage = () => {
 										>
 											<div className='flex gap-3'>
 												{related.banner_image && (
-													<img
+													<OptimizedImage
 														src={related.banner_image}
 														alt={related.title}
 														className='w-24 h-24 object-cover rounded'
@@ -314,11 +356,6 @@ const ArticlePage = () => {
 													/>
 												)}
 												<div className='flex-1'>
-													{related.is_published && (
-														<span className='inline-block px-2 py-1 bg-green-100 text-green-800 text-xs font-semibold uppercase rounded mb-2'>
-															Published
-														</span>
-													)}
 													<h4 className='font-semibold text-sm leading-tight mb-2'>
 														{related.title}
 													</h4>

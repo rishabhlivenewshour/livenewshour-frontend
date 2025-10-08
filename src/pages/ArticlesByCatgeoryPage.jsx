@@ -1,26 +1,31 @@
-import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-	selectArticles,
 	selectArticlesError,
+	selectArticlesLoading,
 } from '../features/articles/articleSelector';
 import { selectCategories } from '../features/categories/categorySelector';
 import BreakingNews from '../components/BreakingNews';
 import { Loader } from 'lucide-react';
 import { fetchArticlesByCategory } from '../features/articles/articleThunks';
 import NewsFeed from '../components/NewsFeed';
+import ArticleSkeleton from '../components/ArticleSkeleton';
+import { getOptimalPageSize } from '../utils/networkDetection';
 
 const ArticlesByCategoryPage = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const { category_slug } = useParams();
+	const observerTarget = useRef(null);
 
-	const [categoryArticles, setCategoryArticles] = useState([]);
-	const [isLoading, setIsLoading] = useState(true);
+	const [currentPage, setCurrentPage] = useState(1);
+	const [allArticles, setAllArticles] = useState([]);
+	const [hasMore, setHasMore] = useState(true);
+	const [hasFetched, setHasFetched] = useState(false);
 
 	const categories = useSelector(selectCategories);
-	const articles = useSelector(selectArticles);
+	const isLoading = useSelector(selectArticlesLoading);
 	const articlesError = useSelector(selectArticlesError);
 
 	// Memoize category lookup
@@ -32,49 +37,82 @@ const ArticlesByCategoryPage = () => {
 	const categoryId = currentCategory?.id;
 	const categoryName = currentCategory?.name || '';
 
-	// Memoize related articles calculation
-	const relatedArticles = useMemo(() => {
-		const firstArticleId = categoryArticles[0]?.id;
-		return articles.filter((a) => a.id !== firstArticleId).slice(0, 6);
-	}, [articles, categoryArticles]);
-
-	// Fetch articles by category
-	const loadCategoryArticles = useCallback(async () => {
-		if (!categoryId) return;
+	// Fetch articles
+	const loadArticles = useCallback(async () => {
+		if (!categoryId || isLoading) return;
 
 		try {
-			setIsLoading(true);
-			const data = await dispatch(fetchArticlesByCategory(categoryId)).unwrap();
-			setCategoryArticles(data);
+			if (!hasFetched) {
+				const pageSize = getOptimalPageSize();
+				const result = await dispatch(
+					fetchArticlesByCategory({
+						categoryId,
+						page: currentPage,
+						pageSize,
+					})
+				).unwrap();
+
+				// Append new articles to existing ones
+				setAllArticles((prev) => {
+					const newArticles = result.articles || [];
+					// Avoid duplicates
+					const existingIds = new Set(prev.map((a) => a.id));
+					const uniqueNew = newArticles.filter((a) => !existingIds.has(a.id));
+					return [...prev, ...uniqueNew];
+				});
+
+				// Check if there are more articles
+				if (currentPage >= result.pagination.totalPages) {
+					setHasMore(false);
+				}
+			}
 		} catch (error) {
-			console.error('Failed to fetch category articles:', error);
+			console.error('Failed to fetch articles:', error);
+			setHasMore(false);
 		} finally {
-			setIsLoading(false);
+			setHasFetched(true);
 		}
-	}, [categoryId, dispatch]);
+	}, [categoryId, currentPage, hasFetched, dispatch, isLoading]);
 
-	// Load category articles when slug changes
+	// Load articles when page changes
 	useEffect(() => {
-		loadCategoryArticles();
-	}, [loadCategoryArticles]);
+		if (categoryId) {
+			loadArticles();
+		}
+	}, [categoryId, loadArticles]);
 
-	// Loading State
-	if (isLoading) {
-		return (
-			<div className='min-h-screen bg-gray-50 flex items-center justify-center'>
-				<div className='text-center'>
-					<Loader
-						className='animate-spin text-red-600 mx-auto mb-4'
-						size={48}
-					/>
-					<p className='text-gray-600 font-semibold'>Loading articles...</p>
-				</div>
-			</div>
+	// Reset when category changes
+	useEffect(() => {
+		setCurrentPage(1);
+		setAllArticles([]);
+		setHasFetched(false);
+		setHasMore(true);
+	}, [category_slug]);
+
+	// Intersection Observer for infinite scroll
+	useEffect(() => {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				if (entries[0].isIntersecting && hasMore && !isLoading) {
+					setCurrentPage((prev) => prev + 1);
+				}
+			},
+			{ threshold: 0.1 }
 		);
-	}
+
+		if (observerTarget.current) {
+			observer.observe(observerTarget.current);
+		}
+
+		return () => {
+			if (observerTarget.current) {
+				observer.unobserve(observerTarget.current);
+			}
+		};
+	}, [hasMore, isLoading]);
 
 	// Error State
-	if (articlesError || categoryArticles.length === 0) {
+	if (articlesError || allArticles.length === 0) {
 		return (
 			<div className='min-h-screen bg-gray-50 flex items-center justify-center'>
 				<div className='text-center max-w-md'>
@@ -96,6 +134,27 @@ const ArticlesByCategoryPage = () => {
 		);
 	}
 
+	// Initial Loading State
+	if (isLoading && allArticles.length === 0) {
+		return (
+			<div className='pt-5 w-full flex justify-center'>
+				<div className='w-full lg:w-[60%] flex flex-col items-center'>
+					<div className='py-5 w-full'>
+						<div className='h-8 bg-gray-300 animate-pulse rounded w-48 mb-5'></div>
+						<ArticleSkeleton variant='hero' />
+					</div>
+					<p className='h-[2px] bg-gray-200 w-full my-10'></p>
+					<div className='grid grid-cols-1 md:grid-cols-2 gap-10 w-full'>
+						<ArticleSkeleton variant='card' />
+						<ArticleSkeleton variant='card' />
+						<ArticleSkeleton variant='card' />
+						<ArticleSkeleton variant='card' />
+					</div>
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<div className='pt-5 w-full flex justify-center'>
 			<div className='w-full lg:w-[60%] flex flex-col items-center'>
@@ -103,26 +162,49 @@ const ArticlesByCategoryPage = () => {
 					<h1 className='text-2xl font-semibold tracking-wider text-dark border-l-4 border-primary py-1 px-3 my-5 uppercase'>
 						{categoryName}
 					</h1>
-					{categoryArticles[0] && (
+					{allArticles[0] && (
 						<div className='w-full h-fit'>
-							<BreakingNews breakingNews={categoryArticles[0]} />
+							<BreakingNews breakingNews={allArticles[0]} />
 						</div>
 					)}
 				</div>
-				<p className='h-[2px] bg-gray-200 w-full my-10'></p>
-				{categoryArticles.length > 1 && (
-					<NewsFeed
-						heading={`Latest ${categoryName} Stories`}
-						newsArray={categoryArticles?.slice(1, 10)}
-					/>
-				)}
-				{relatedArticles.length > 0 && (
+
+				{allArticles.length > 1 && (
 					<>
 						<p className='h-[2px] bg-gray-200 w-full my-10'></p>
-						<div className='mb-10 w-full'>
-							<NewsFeed heading='Related Stories' newsArray={relatedArticles} />
-						</div>
+						<NewsFeed
+							heading={`Latest ${categoryName} Stories`}
+							newsArray={allArticles.slice(1)}
+						/>
 					</>
+				)}
+
+				{/* Infinite Scroll Trigger */}
+				{hasMore && (
+					<div
+						ref={observerTarget}
+						className='flex justify-center items-center py-10 w-full'
+					>
+						{isLoading ? (
+							<div className='flex flex-col items-center gap-3'>
+								<Loader className='animate-spin text-red-600' size={40} />
+								<p className='text-gray-600 text-sm'>
+									Loading more articles...
+								</p>
+							</div>
+						) : (
+							<div className='h-20'></div>
+						)}
+					</div>
+				)}
+
+				{/* End of List Message */}
+				{!hasMore && allArticles.length > 0 && (
+					<div className='py-10 text-center w-full'>
+						<p className='text-gray-500 text-sm'>
+							You've reached the end of {categoryName} articles
+						</p>
+					</div>
 				)}
 			</div>
 		</div>

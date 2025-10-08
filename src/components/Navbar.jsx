@@ -7,12 +7,13 @@ import { useState } from 'react';
 import SideMenu from './SideMenu';
 import { processvalue } from '../utils/CommonFunctions';
 
-import { FaSearch } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import {
 	selectCategories,
 	selectCategoriesLoading,
 } from '../features/categories/categorySelector';
+import OptimizedImage from './OptimizedImage';
+import { Search } from 'lucide-react';
 
 const Navbar = () => {
 	const location = useLocation().pathname;
@@ -32,10 +33,13 @@ const Navbar = () => {
 					onClick={toogleMenu}
 					className='rounded-md hover:bg-gray-100 active:scale-95 transition-all duration-300 ease-in-out p-1'
 				>
-					<img
+					<OptimizedImage
 						src={showMenu ? CloseIcon : MenuIcon}
-						alt=''
-						className='h-8 lg:h-10 w-auto'
+						alt={'Menu'}
+						className='h-8 lg:h-10 w-auto max-w-[100px]'
+						onError={(e) => {
+							e.target.style.display = 'none';
+						}}
 					/>
 				</button>
 				<NavLink
@@ -43,13 +47,21 @@ const Navbar = () => {
 					onClick={() => setShowMenu(false)}
 					className='absolute left-1/2 transform -translate-x-1/2'
 				>
-					<img src={Logo} alt='' className='h-7 lg:h-9 w-auto' />
+					<OptimizedImage
+						src={Logo}
+						alt={'Live News Hour'}
+						className='h-7 lg:h-9 w-auto max-w-[250px]'
+						onError={(e) => {
+							e.target.style.display = 'none';
+						}}
+					/>
 				</NavLink>
 				<NavLink
 					to='/search'
 					className='p-2 flex items-center justify-center rounded bg-gray-100 active:scale-95 transition-all duration-300 ease-in-out hover:bg-gray-200'
+					aria-label='Search'
 				>
-					<FaSearch size={20} />
+					<Search size={20} />
 				</NavLink>
 			</nav>
 			<div className={`${showMenu ? 'block' : 'hidden'} absolute left-0 z-10`}>
@@ -67,7 +79,8 @@ const Navbar = () => {
 							<NavLink
 								key={index}
 								to={`/news/${item.slug}`}
-								className='flex flex-col justify-between items-center hover:bg-[#C00000] active:scale-95 transition-all duration-300 ease-in-out'
+								onClick={() => setShowMenu(false)}
+								className='flex flex-col justify-between items-center hover:bg-[#C00000] active:scale-95 transition-all duration-300 ease-in-out w-fit'
 							>
 								<p className='p-2 px-4'>{item.name?.toUpperCase()}</p>
 								<p
@@ -80,7 +93,7 @@ const Navbar = () => {
 							</NavLink>
 						))}
 						<button onClick={() => setShowMenu(true)}>
-							<p className='p-2 pl-3 hover:bg-[#C00000] active:scale-95 transition-all duration-300 ease-in-out'>
+							<p className='p-2 pl-3 hover:bg-[#C00000] active:scale-95 transition-all duration-300 ease-in-out w-fit'>
 								MORE
 							</p>
 						</button>

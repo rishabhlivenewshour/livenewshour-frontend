@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { selectCategories } from '../features/categories/categorySelector';
 import { useSelector } from 'react-redux';
 import { getCategoryNameById } from '../service/commonFunctions';
+import OptimizedImage from './OptimizedImage';
 
 const HeroArticleCard = ({ article }) => {
 	const categories = useSelector(selectCategories);
@@ -18,8 +19,11 @@ const HeroArticleCard = ({ article }) => {
 				>
 					<img
 						src={article.banner_image}
-						alt='Featured article'
-						className='w-full h-[100px] object-cover rounded'
+						alt={article.title}
+						className='w-[100px] h-[100px] object-cover rounded'
+						onError={(e) => {
+							e.target.style.display = 'none';
+						}}
 					/>
 					<div className=''>
 						<h2 className='font-semibold'>{article.title}</h2>

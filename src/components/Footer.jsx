@@ -1,8 +1,26 @@
 import { Link } from 'react-router-dom';
 import Logo from '../assets/livenewshour.png';
-import { FaFacebook, FaInstagram, FaLinkedin, FaYoutube } from 'react-icons/fa';
-import { FaXTwitter } from 'react-icons/fa6';
 import { processvalue } from '../utils/CommonFunctions';
+import OptimizedImage from './OptimizedImage';
+import {
+	Facebook,
+	Instagram,
+	Linkedin,
+	Youtube,
+	createLucideIcon,
+} from 'lucide-react';
+
+const XIcon = createLucideIcon('X', [
+	[
+		'path',
+		{
+			key: 'path1',
+			d: 'M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z',
+			stroke: 'none',
+			fill: 'currentColor',
+		},
+	],
+]);
 
 const Footer = () => {
 	return (
@@ -10,11 +28,13 @@ const Footer = () => {
 			<div className='py-10 px-[20px] sm:px-[40px] flex flex-wrap justify-between text-light gap-3 text-sm border-t-2'>
 				<div className='w-full sm:w-1/4'>
 					<Link to='/'>
-						<img
-							loading='lazy'
-							className='h-8 w-auto space-y-1'
+						<OptimizedImage
 							src={Logo}
-							alt='TrendFusion logo'
+							alt={'Live News Hour'}
+							className='h-8 w-auto space-y-1 max-w-[250px]'
+							onError={(e) => {
+								e.target.style.display = 'none';
+							}}
 						/>
 					</Link>
 					<p className='w-full mt-2'>
@@ -24,7 +44,7 @@ const Footer = () => {
 					</p>
 				</div>
 				<div>
-					<h4 className='font-bold mb-2 text-dark'>Sections</h4>
+					<p className='font-bold mb-2 text-dark'>Sections</p>
 					<ul className='space-y-1'>
 						{[
 							'World',
@@ -46,7 +66,7 @@ const Footer = () => {
 
 				{/* Section 2: Company Info */}
 				<div>
-					<h4 className='font-bold mb-2 text-dark'>Company</h4>
+					<p className='font-bold mb-2 text-dark'>Company</p>
 					<ul className='space-y-1'>
 						{['About Us', 'Contact', 'Careers', 'Press', 'Advertise'].map(
 							(item, index) => (
@@ -63,7 +83,7 @@ const Footer = () => {
 
 				{/* Section 3: Legal */}
 				<div>
-					<h4 className='font-bold mb-2 text-dark'>Legal</h4>
+					<p className='font-bold mb-2 text-dark'>Legal</p>
 					<ul className='space-y-1'>
 						{['Terms of Use', 'Privacy Policy', 'Cookie Policy'].map(
 							(item, index) => (
@@ -80,7 +100,7 @@ const Footer = () => {
 
 				{/* Section 4: Newsletter */}
 				<div>
-					<h4 className='font-bold mb-2 text-dark'>Newsletter</h4>
+					<p className='font-bold mb-2 text-dark'>Newsletter</p>
 					<p className='mb-2'>Stay informed with our top headlines.</p>
 					<div className='flex w-full'>
 						<input
@@ -92,41 +112,49 @@ const Footer = () => {
 							Subscribe
 						</button>
 					</div>
-					<h4 className='font-semibold mb-2 text-dark mt-3'>
+					<p className='font-semibold mb-2 text-dark mt-3'>
 						Follow us on Social Media
-					</h4>
+					</p>
 					<div className='flex gap-5 text-gray-400'>
 						<Link
 							to='https://facebook.com'
 							target='_blank'
 							rel='noopener noreferrer'
-							className=''
+							aria-label='Visit our Facebook page'
 						>
-							<FaFacebook size={25} className='text-primary hover:text-dark' />
+							<Facebook size={25} className='text-primary hover:text-dark' />
 						</Link>
-						<Link to='https://x.com' target='_blank' rel='noopener noreferrer'>
-							<FaXTwitter size={25} className='text-primary hover:text-dark' />
+						<Link
+							to='https://x.com'
+							target='_blank'
+							rel='noopener noreferrer'
+							aria-label='Visit our X handle'
+						>
+							<XIcon size={25} className='text-primary hover:text-dark' />
 						</Link>
 						<Link
 							to='https://instagram.com'
 							target='_blank'
 							rel='noopener noreferrer'
+							aria-label='Visit our Instagram profile'
 						>
-							<FaInstagram size={25} className='text-primary hover:text-dark' />
+							<Instagram size={25} className='text-primary hover:text-dark' />
 						</Link>
 						<Link
 							to='https://youtube.com'
 							target='_blank'
 							rel='noopener noreferrer'
+							aria-label='Visit our Youtube channel'
 						>
-							<FaYoutube size={25} className='text-primary hover:text-dark' />
+							<Youtube size={25} className='text-primary hover:text-dark' />
 						</Link>
 						<Link
 							to='https://linkedin.com'
 							target='_blank'
 							rel='noopener noreferrer'
+							aria-label='Visit our Linkedin page'
 						>
-							<FaLinkedin size={25} className='text-primary hover:text-dark' />
+							<Linkedin size={25} className='text-primary hover:text-dark' />
 						</Link>
 					</div>
 				</div>
