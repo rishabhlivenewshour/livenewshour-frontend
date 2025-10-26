@@ -7,19 +7,6 @@ export const processvalue = (value) => {
 		.toLowerCase();
 };
 
-export const formatDateTime = (isoString) => {
-	const date = new Date(isoString);
-
-	const dd = String(date.getDate()).padStart(2, '0');
-	const mm = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-	const yy = String(date.getFullYear());
-
-	const hours = String(date.getHours()).padStart(2, '0');
-	const mins = String(date.getMinutes()).padStart(2, '0');
-
-	return `${dd}-${mm}-${yy} ${hours}:${mins}`;
-};
-
 export const formatDate = (dateString) => {
 	if (!dateString) return '';
 	return new Date(dateString).toLocaleDateString('en-US', {

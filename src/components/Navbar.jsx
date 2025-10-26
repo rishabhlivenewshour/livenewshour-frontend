@@ -5,7 +5,6 @@ import CloseIcon from '../assets/closeicon.png';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import SideMenu from './SideMenu';
-import { processvalue } from '../utils/CommonFunctions';
 
 import { useSelector } from 'react-redux';
 import {
@@ -45,12 +44,12 @@ const Navbar = () => {
 				<NavLink
 					to='/'
 					onClick={() => setShowMenu(false)}
-					className='absolute left-1/2 transform -translate-x-1/2'
+					className='absolute left-1/2 transform -translate-x-1/2 '
 				>
-					<OptimizedImage
+					<img
 						src={Logo}
 						alt={'Live News Hour'}
-						className='h-7 lg:h-9 w-auto max-w-[250px]'
+						className='h-7 lg:h-[75px] w-auto max-w-[250px]'
 						onError={(e) => {
 							e.target.style.display = 'none';
 						}}
@@ -75,23 +74,24 @@ const Navbar = () => {
 			>
 				{!categoriesLoading && (
 					<>
-						{categories.slice(0, 6).map((item, index) => (
-							<NavLink
-								key={index}
-								to={`/news/${item.slug}`}
-								onClick={() => setShowMenu(false)}
-								className='flex flex-col justify-between items-center hover:bg-[#C00000] active:scale-95 transition-all duration-300 ease-in-out w-fit'
-							>
-								<p className='p-2 px-4'>{item.name?.toUpperCase()}</p>
-								<p
-									className={`bg-back w-full h-[2px] ${
-										location.includes(processvalue(item.name))
-											? 'block'
-											: 'hidden'
-									}`}
-								></p>
-							</NavLink>
-						))}
+						{[...categories]
+							.reverse()
+							.slice(0, 6)
+							.map((item, index) => (
+								<NavLink
+									key={index}
+									to={`/news/topics/${item.slug}`}
+									onClick={() => setShowMenu(false)}
+									className='flex flex-col justify-between items-center hover:bg-[#C00000] active:scale-95 transition-all duration-300 ease-in-out w-fit'
+								>
+									<p className='p-2 px-4'>{item.name?.toUpperCase()}</p>
+									<p
+										className={`bg-back w-full h-[2px] ${
+											location.includes(item.slug) ? 'block' : 'hidden'
+										}`}
+									></p>
+								</NavLink>
+							))}
 						<button onClick={() => setShowMenu(true)}>
 							<p className='p-2 pl-3 hover:bg-[#C00000] active:scale-95 transition-all duration-300 ease-in-out w-fit'>
 								MORE

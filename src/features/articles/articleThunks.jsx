@@ -18,6 +18,7 @@ export const fetchArticles = createAsyncThunk(
 				summary: article.summary,
 				banner_image: article.banner_image,
 				category: article.category,
+				category_name: article.category_name,
 				author: article.author,
 				published_at: article.published_at,
 			}));
@@ -80,6 +81,41 @@ export const fetchArticleByCategorySlug = createAsyncThunk(
 		try {
 			const data = await apiClient(`/news/articles/?slug=${categorySlug}`);
 			return data?.results[0];
+		} catch (error) {
+			return rejectWithValue(error.message);
+		}
+	}
+);
+
+// Fetch single article by ID (keep as is)
+export const fetchArticlesByTag = createAsyncThunk(
+	'articles/fetchByTag',
+	async ({ tag, page = 1, pageSize = 20 }, { rejectWithValue }) => {
+		try {
+			const data = await apiClient(
+				`/news/articles/?tag=${tag}&page=${page}&page_size=${pageSize}`
+			);
+			const filteredData = data?.results.map((article) => ({
+				id: article.id,
+				title: article.title,
+				slug: article.slug,
+				summary: article.summary,
+				banner_image: article.banner_image,
+				category: article.category,
+				category_name: article.category_name,
+				author: article.author,
+				published_at: article.published_at,
+			}));
+
+			return {
+				articles: filteredData,
+				pagination: {
+					page: data.page,
+					pageSize: data.page_size,
+					totalPages: data.total_pages,
+					totalItems: data.total_items,
+				},
+			};
 		} catch (error) {
 			return rejectWithValue(error.message);
 		}

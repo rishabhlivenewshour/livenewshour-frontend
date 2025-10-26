@@ -17,8 +17,8 @@ export const getOptimalPageSize = () => {
 	const speed = getNetworkSpeed();
 
 	const pageSizes = {
-		'4g': 30, // Fast connection - load more
-		'3g': 20, // Moderate connection
+		'4g': 20, // Fast connection - load more
+		'3g': 15, // Moderate connection
 		'2g': 10, // Slow connection
 		'slow-2g': 5, // Very slow connection
 		unknown: 20, // Default

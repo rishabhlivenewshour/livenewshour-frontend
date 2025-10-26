@@ -4,6 +4,7 @@ const initialState = {
 	articles: [],
 	featuredArticles: [],
 	articlesByCategory: [],
+	articlesByTag: [],
 	searchResults: [],
 	pagination: {
 		page: 1,
@@ -18,6 +19,12 @@ const initialState = {
 		totalItems: 0,
 	},
 	searchPagination: {
+		page: 1,
+		pageSize: 20,
+		totalPages: 1,
+		totalItems: 0,
+	},
+	TagPagination: {
 		page: 1,
 		pageSize: 20,
 		totalPages: 1,
@@ -40,6 +47,10 @@ const articleSlice = createSlice({
 		clearCategoryArticles: (state) => {
 			state.articlesByCategory = [];
 			state.categoryPagination = initialState.categoryPagination;
+		},
+		clearTagArticles: (state) => {
+			state.articlesByTag = [];
+			state.TagPagination = initialState.TagPagination;
 		},
 		// Cache individual article
 		cacheArticle: (state, action) => {
@@ -118,6 +129,22 @@ const articleSlice = createSlice({
 			}
 		);
 
+		// Fetch articles by category tag
+		builder.addCase('articles/fetchByTag/pending', (state) => {
+			state.loading = true;
+			state.error = null;
+		});
+		builder.addCase('articles/fetchByTag/fulfilled', (state) => {
+			state.loading = false;
+		});
+		builder.addCase(
+			'articles/fetchByTag/rejected',
+			(state, action) => {
+				state.loading = false;
+				state.error = action.payload;
+			}
+		);
+
 		// Search articles
 		builder.addCase('articles/fetchBySearch/pending', (state) => {
 			state.loading = true;
@@ -136,6 +163,10 @@ const articleSlice = createSlice({
 	},
 });
 
-export const { clearSearchResults, clearCategoryArticles, cacheArticle } =
-	articleSlice.actions;
+export const {
+	clearSearchResults,
+	clearCategoryArticles,
+	clearTagArticles,
+	cacheArticle,
+} = articleSlice.actions;
 export default articleSlice.reducer;

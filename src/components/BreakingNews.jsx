@@ -1,14 +1,8 @@
 import { Link } from 'react-router-dom';
 import { formatDate } from '../utils/CommonFunctions';
 import { Loader } from 'lucide-react';
-import { useSelector } from 'react-redux';
-import { selectCategories } from '../features/categories/categorySelector';
-import { getCategoryNameById } from '../service/commonFunctions';
-import OptimizedImage from './OptimizedImage';
 
 const BreakingNews = ({ breakingNews }) => {
-	const categories = useSelector(selectCategories);
-
 	return (
 		<div className='w-full h-full flex items-center justify-center'>
 			{breakingNews ? (
@@ -35,7 +29,7 @@ const BreakingNews = ({ breakingNews }) => {
 
 					<div className='flex justify-between text-sm mt-2'>
 						<p className='font-semibold text-primary'>
-							{getCategoryNameById(categories, breakingNews.category)}
+							{breakingNews.category_name}
 						</p>
 						<p className='text-light'>
 							{breakingNews.author +

@@ -1,23 +1,22 @@
-import { useEffect, useState, useMemo, useCallback, useRef } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
 	selectArticlesError,
 	selectArticlesLoading,
 } from '../features/articles/articleSelector';
-import { selectCategories } from '../features/categories/categorySelector';
 import BreakingNews from '../components/BreakingNews';
 import { Loader } from 'lucide-react';
-import { fetchArticlesByCategory } from '../features/articles/articleThunks';
+import { fetchArticlesByTag } from '../features/articles/articleThunks';
 import NewsFeed from '../components/NewsFeed';
 import ArticleSkeleton from '../components/ArticleSkeleton';
 import { getOptimalPageSize } from '../utils/networkDetection';
 import SEOHead from '../components/SEOHead';
 
-const ArticlesByCategoryPage = () => {
+const ArticlesByTagPage = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-	const { category_slug } = useParams();
+	const { tag } = useParams();
 	const observerTarget = useRef(null);
 
 	const [currentPage, setCurrentPage] = useState(1);
@@ -25,29 +24,19 @@ const ArticlesByCategoryPage = () => {
 	const [hasMore, setHasMore] = useState(true);
 	const [hasFetched, setHasFetched] = useState(false);
 
-	const categories = useSelector(selectCategories);
-	const articlesLoading = useSelector(selectArticlesLoading);
+	const isLoading = useSelector(selectArticlesLoading);
 	const articlesError = useSelector(selectArticlesError);
-
-	// Memoize category lookup
-	const currentCategory = useMemo(
-		() => categories.find((cat) => cat.slug === category_slug),
-		[categories, category_slug]
-	);
-
-	const categoryId = currentCategory?.id;
-	const categoryName = currentCategory?.name || '';
 
 	// Fetch articles
 	const loadArticles = useCallback(async () => {
-		if (!categoryId || articlesLoading) return;
+		if (isLoading) return;
 
 		try {
 			if (!hasFetched) {
 				const pageSize = getOptimalPageSize();
 				const result = await dispatch(
-					fetchArticlesByCategory({
-						categoryId,
+					fetchArticlesByTag({
+						tag,
 						page: currentPage,
 						pageSize,
 					})
@@ -73,14 +62,14 @@ const ArticlesByCategoryPage = () => {
 		} finally {
 			setHasFetched(true);
 		}
-	}, [categoryId, currentPage, hasFetched, dispatch, articlesLoading]);
+	}, [tag, currentPage, hasFetched, dispatch, isLoading]);
 
 	// Load articles when page changes
 	useEffect(() => {
-		if (categoryId) {
+		if (tag) {
 			loadArticles();
 		}
-	}, [categoryId, loadArticles]);
+	}, [tag, loadArticles]);
 
 	// Reset when category changes
 	useEffect(() => {
@@ -88,13 +77,13 @@ const ArticlesByCategoryPage = () => {
 		setAllArticles([]);
 		setHasFetched(false);
 		setHasMore(true);
-	}, [category_slug]);
+	}, [tag]);
 
 	// Intersection Observer for infinite scroll
 	useEffect(() => {
 		const observer = new IntersectionObserver(
 			(entries) => {
-				if (entries[0].isIntersecting && hasMore && !articlesLoading) {
+				if (entries[0].isIntersecting && hasMore && !isLoading) {
 					setCurrentPage((prev) => prev + 1);
 				}
 			},
@@ -110,22 +99,7 @@ const ArticlesByCategoryPage = () => {
 				observer.unobserve(observerTarget.current);
 			}
 		};
-	}, [hasMore, articlesLoading]);
-
-	// Loading State
-	if (articlesLoading) {
-		return (
-			<div className='min-h-screen bg-gray-50 flex items-center justify-center'>
-				<div className='text-center'>
-					<Loader
-						className='animate-spin text-red-600 mx-auto mb-4'
-						size={48}
-					/>
-					<p className='text-gray-600 font-semibold'>Loading article...</p>
-				</div>
-			</div>
-		);
-	}
+	}, [hasMore, isLoading]);
 
 	// Error State
 	if (articlesError || allArticles.length === 0) {
@@ -151,7 +125,7 @@ const ArticlesByCategoryPage = () => {
 	}
 
 	// Initial Loading State
-	if (articlesLoading && allArticles.length === 0) {
+	if (isLoading && allArticles.length === 0) {
 		return (
 			<div className='pt-5 w-full flex justify-center'>
 				<div className='w-full lg:w-[60%] flex flex-col items-center'>
@@ -174,26 +148,25 @@ const ArticlesByCategoryPage = () => {
 	return (
 		<>
 			<SEOHead
-				title={`${categoryName} News - Latest Updates & Headlines`}
-				description={`Get all the latest ${categoryName} news, top stories, and live updates from around the world on Live News Hour.`}
+				title={`${tag} News - Latest Updates & Headlines`}
+				description={`Get all the latest ${tag} news, top stories, and live updates from around the world on Live News Hour.`}
 				keywords={[
-					`${categoryName} News`,
-					`${categoryName} Headlines`,
-					`Latest ${categoryName} Updates`,
+					`${tag} News`,
+					`${tag} Headlines`,
+					`Latest ${tag} Updates`,
 					'Live News Hour',
 				]}
-				url={`/news/topics/${category_slug}`}
+				url={`/news/${tag}`}
 				type='website'
 				image='https://livenewshour.com/og-image.jpg'
 				author='Live News Hour Team'
-				tags={[categoryName]}
+				tags={[tag]}
 			/>
-
-			<div className='pt-5 pb-10 w-full flex justify-center'>
+			<div className='pt-5 w-full flex justify-center'>
 				<div className='w-full lg:w-[60%] flex flex-col items-center'>
 					<div className='py-5 w-full'>
 						<h1 className='text-2xl font-semibold tracking-wider text-dark border-l-4 border-primary py-1 px-3 my-5 uppercase'>
-							{categoryName}
+							{tag}
 						</h1>
 						{allArticles[0] && (
 							<div className='w-full h-fit'>
@@ -206,7 +179,7 @@ const ArticlesByCategoryPage = () => {
 						<>
 							<p className='h-[2px] bg-gray-200 w-full my-10'></p>
 							<NewsFeed
-								heading={`Latest ${categoryName} Stories`}
+								heading={`Latest ${tag} Stories`}
 								newsArray={allArticles.slice(1)}
 							/>
 						</>
@@ -218,7 +191,7 @@ const ArticlesByCategoryPage = () => {
 							ref={observerTarget}
 							className='flex justify-center items-center py-10 w-full'
 						>
-							{articlesLoading ? (
+							{isLoading ? (
 								<div className='flex flex-col items-center gap-3'>
 									<Loader className='animate-spin text-red-600' size={40} />
 									<p className='text-gray-600 text-sm'>
@@ -235,14 +208,14 @@ const ArticlesByCategoryPage = () => {
 					{/* {!hasMore && allArticles.length > 0 && (
 						<div className='py-10 text-center w-full'>
 							<p className='text-gray-500 text-sm'>
-								You've reached the end of {categoryName} articles
+								You've reached the end of {tag} articles
 							</p>
 						</div>
 					)} */}
 				</div>
-			</div>
+			</div>{' '}
 		</>
 	);
 };
 
-export default ArticlesByCategoryPage;
+export default ArticlesByTagPage;

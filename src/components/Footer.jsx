@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import Logo from '../assets/livenewshour.png';
+import Logo from '../assets/livenewshour.jpeg';
 import { processvalue } from '../utils/CommonFunctions';
 import OptimizedImage from './OptimizedImage';
 import {
@@ -31,7 +31,7 @@ const Footer = () => {
 						<OptimizedImage
 							src={Logo}
 							alt={'Live News Hour'}
-							className='h-8 w-auto space-y-1 max-w-[250px]'
+							className='h-20 w-auto space-y-1 max-w-[250px]'
 							onError={(e) => {
 								e.target.style.display = 'none';
 							}}

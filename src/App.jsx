@@ -10,6 +10,8 @@ import ScrollToTop from './utils/ScrollToTop';
 import BackToTop from './components/BackToTop';
 import { fetchCategories } from './features/categories/categoryThunks';
 import { onNetworkChange, getNetworkInfo } from './utils/networkDetection';
+import ArticlesByTagPage from './pages/ArticlesByTagPage';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // ✅ Lazy load route components
 const HomePage = lazy(() => import('./pages/HomePage'));
@@ -66,43 +68,46 @@ function App() {
 	if (!isAppReady) return <LoaderComponent />;
 
 	return (
-		<BrowserRouter>
-			<ScrollToTop />
-			<BackToTop />
+		<ErrorBoundary>
+			<BrowserRouter>
+				<ScrollToTop />
+				<BackToTop />
 
-			{/* Fixed Navbar */}
-			<div className='fixed w-[100vw] mt-[-64px] lg:mt-[-106px] z-[999]'>
-				<Navbar />
-			</div>
+				{/* Fixed Navbar */}
+				<div className='fixed w-[100vw] mt-[-64px] lg:mt-[-106px] z-[999]'>
+					<Navbar />
+				</div>
 
-			{/* Page Container */}
-			<div className='mt-[64px] lg:mt-[106px] px-[5vw] sm:px-[14vw]'>
-				<Suspense fallback={<LoaderComponent />}>
-					<Routes>
-						<Route path='/' element={<HomePage />} />
-						<Route
-							path='/news/:category_slug'
-							element={<ArticlesByCategoryPage />}
-						/>
-						<Route
-							path='/news/articles/:article_slug'
-							element={<ArticlePage />}
-						/>
-						<Route path='/search' element={<SearchPage />} />
-						<Route
-							path='*'
-							element={
-								<p className='w-full h-[280px] flex justify-center items-center text-2xl tracking-widest text-light font-semibold'>
-									Coming soon...
-								</p>
-							}
-						/>
-					</Routes>
-				</Suspense>
-			</div>
+				{/* Page Container */}
+				<div className='mt-[64px] lg:mt-[106px] px-[5vw] sm:px-[14vw]'>
+					<Suspense fallback={<LoaderComponent />}>
+						<Routes>
+							<Route path='/' element={<HomePage />} />
+							<Route
+								path='/news/topics/:category_slug'
+								element={<ArticlesByCategoryPage />}
+							/>
+							<Route path='/news/:tag' element={<ArticlesByTagPage />} />
+							<Route
+								path='/news/articles/:article_slug'
+								element={<ArticlePage />}
+							/>
+							<Route path='/search' element={<SearchPage />} />
+							{/* <Route
+								path='*'
+								element={
+									<p className='w-full h-[280px] flex justify-center items-center text-2xl tracking-widest text-light font-semibold'>
+										Coming soon...
+									</p>
+								}
+							/> */}
+						</Routes>
+					</Suspense>
+				</div>
 
-			<Footer />
-		</BrowserRouter>
+				<Footer />
+			</BrowserRouter>
+		</ErrorBoundary>
 	);
 }
 

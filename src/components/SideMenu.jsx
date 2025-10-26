@@ -9,7 +9,7 @@ const SideMenu = ({ setShowMenu }) => {
 	const categories = useSelector(selectCategories);
 
 	const handleClick = (category_slug) => {
-		navigate(`/news/${category_slug}`);
+		navigate(`/news/topics/${category_slug}`);
 		setShowMenu(false);
 	};
 	return (

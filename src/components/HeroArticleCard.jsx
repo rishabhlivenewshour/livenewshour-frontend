@@ -1,14 +1,8 @@
 import { Loader } from 'lucide-react';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { selectCategories } from '../features/categories/categorySelector';
-import { useSelector } from 'react-redux';
-import { getCategoryNameById } from '../service/commonFunctions';
-import OptimizedImage from './OptimizedImage';
 
 const HeroArticleCard = ({ article }) => {
-	const categories = useSelector(selectCategories);
-
 	return (
 		<div className='h-fit min-h-[120px] w-fit min-w-[150px]'>
 			{article ? (
@@ -31,7 +25,7 @@ const HeroArticleCard = ({ article }) => {
 							{article.summary}
 						</p>
 						<p className='font-semibold text-xs text-primary'>
-							{getCategoryNameById(categories, article.category)}
+							{article.category_name}
 						</p>
 					</div>
 				</Link>
