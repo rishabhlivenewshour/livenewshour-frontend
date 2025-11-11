@@ -2,8 +2,8 @@ import { useEffect, useState, useRef } from 'react';
 import { fetchArticlesByCategory } from '../features/articles/articleThunks';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { ChevronRight } from 'lucide-react';
 import OptimizedImage from './OptimizedImage';
+import { ChevronRightIcon } from './Icons';
 
 const NewsFeedByCategory = ({ category }) => {
 	const dispatch = useDispatch();
@@ -94,11 +94,11 @@ const NewsFeedByCategory = ({ category }) => {
 				{categoryArticles.length >= 4 && (
 					<button
 						className='flex gap-0.5 py-[3px] hover:text-primary transition'
-						onClick={() => navigate(`/news/${category.slug}`)}
+						onClick={() => navigate(`/news/topics/${category.slug}`)}
 						aria-label={`View all ${category.name} articles`}
 					>
 						<span className='text-xs'>View all</span>
-						<ChevronRight size={15} />
+						<ChevronRightIcon size={15} />
 					</button>
 				)}
 			</div>

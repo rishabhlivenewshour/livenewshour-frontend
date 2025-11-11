@@ -13,11 +13,11 @@ import {
 	fetchArticles,
 } from '../features/articles/articleThunks';
 import { clearSearchResults } from '../features/articles/articleSlice';
-import { Loader, Search } from 'lucide-react';
 import ArticleSkeleton from '../components/ArticleSkeleton';
 import { getOptimalPageSize } from '../utils/networkDetection';
 import OptimizedImage from '../components/OptimizedImage';
 import SEOHead from '../components/SEOHead';
+import { LoaderIcon, SearchIcon } from '../components/Icons';
 
 const SearchPage = () => {
 	const dispatch = useDispatch();
@@ -93,7 +93,7 @@ const SearchPage = () => {
 			if (!debouncedSearchQuery) {
 				try {
 					const result = await dispatch(
-						fetchArticles({ page: 1, pageSize: 5 })
+						fetchArticles({ page: 1, pageSize: 10 })
 					).unwrap();
 					setRecentArticles(result.articles);
 				} catch (error) {
@@ -181,7 +181,7 @@ const SearchPage = () => {
 									className='w-full border border-r-0 border-dark px-3 py-2 text-base rounded rounded-r-none focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary'
 								/>
 								<p className='px-5 py-2 bg-dark rounded-r flex items-center justify-center'>
-									<Search size={18} className='text-back' />
+									<SearchIcon size={18} className='text-back' />
 								</p>
 							</div>
 						</div>
@@ -230,7 +230,7 @@ const SearchPage = () => {
 										>
 											{articlesLoading ? (
 												<div className='flex flex-col items-center gap-3'>
-													<Loader
+													<LoaderIcon
 														className='animate-spin text-red-600'
 														size={40}
 													/>

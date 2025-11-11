@@ -1,43 +1,39 @@
 import { Link } from 'react-router-dom';
-import Logo from '../assets/livenewshour.jpeg';
 import { processvalue } from '../utils/CommonFunctions';
-import OptimizedImage from './OptimizedImage';
-import {
-	Facebook,
-	Instagram,
-	Linkedin,
-	Youtube,
-	createLucideIcon,
-} from 'lucide-react';
 
-const XIcon = createLucideIcon('X', [
-	[
-		'path',
-		{
-			key: 'path1',
-			d: 'M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z',
-			stroke: 'none',
-			fill: 'currentColor',
-		},
-	],
-]);
+import Logo from './Logo';
+import { useSelector } from 'react-redux';
+import { selectCategories } from '../features/categories/categorySelector';
+import {
+	FacebookIcon,
+	InstagramIcon,
+	LinkedinIcon,
+	XTwitterIcon,
+	YoutubeIcon,
+} from './Icons';
 
 const Footer = () => {
+	const categories = useSelector(selectCategories);
 	return (
 		<div>
 			<div className='py-10 px-[20px] sm:px-[40px] flex flex-wrap justify-between text-light gap-3 text-sm border-t-2'>
-				<div className='w-full sm:w-1/4'>
-					<Link to='/'>
-						<OptimizedImage
+				<div className='w-full sm:w-1/4 relative'>
+					<Link
+						to='/'
+						className='absolute left-[-53px] sm:left-[-40px] top-[-20px]'
+						aria-label='Logo'
+					>
+						{/* <OptimizedImage
 							src={Logo}
 							alt={'Live News Hour'}
 							className='h-20 w-auto space-y-1 max-w-[250px]'
 							onError={(e) => {
 								e.target.style.display = 'none';
 							}}
-						/>
+						/> */}
+						<Logo />
 					</Link>
-					<p className='w-full mt-2'>
+					<p className='w-full mt-12 sm:mt-15'>
 						LiveNewsHour brings you the latest news from around the world —
 						fast, accurate, and unbiased. Stay informed with expert insights,
 						trending stories, and real-time updates.
@@ -46,21 +42,19 @@ const Footer = () => {
 				<div>
 					<p className='font-bold mb-2 text-dark'>Sections</p>
 					<ul className='space-y-1'>
-						{[
-							'World',
-							'Politics',
-							'Business',
-							'Technology',
-							'Sports',
-							'Health',
-						].map((section, index) => (
-							<li
-								key={index}
-								className='hover:text-primary cursor-pointer active:scale-95 transition-all duration-300 ease-in-out'
-							>
-								<Link to={`/${processvalue(section)}`}>{section}</Link>
-							</li>
-						))}
+						{[...categories]
+							.reverse()
+							.slice(0, 6)
+							.map((section, index) => (
+								<li
+									key={index}
+									className='hover:text-primary cursor-pointer active:scale-95 transition-all duration-300 ease-in-out'
+								>
+									<Link to={`/news/topics/${section.slug}`}>
+										{section.name}
+									</Link>
+								</li>
+							))}
 					</ul>
 				</div>
 
@@ -122,7 +116,10 @@ const Footer = () => {
 							rel='noopener noreferrer'
 							aria-label='Visit our Facebook page'
 						>
-							<Facebook size={25} className='text-primary hover:text-dark' />
+							<FacebookIcon
+								size={25}
+								className='text-primary hover:text-dark'
+							/>
 						</Link>
 						<Link
 							to='https://x.com'
@@ -130,7 +127,10 @@ const Footer = () => {
 							rel='noopener noreferrer'
 							aria-label='Visit our X handle'
 						>
-							<XIcon size={25} className='text-primary hover:text-dark' />
+							<XTwitterIcon
+								size={25}
+								className='text-primary hover:text-dark'
+							/>
 						</Link>
 						<Link
 							to='https://instagram.com'
@@ -138,7 +138,10 @@ const Footer = () => {
 							rel='noopener noreferrer'
 							aria-label='Visit our Instagram profile'
 						>
-							<Instagram size={25} className='text-primary hover:text-dark' />
+							<InstagramIcon
+								size={25}
+								className='text-primary hover:text-dark'
+							/>
 						</Link>
 						<Link
 							to='https://youtube.com'
@@ -146,7 +149,7 @@ const Footer = () => {
 							rel='noopener noreferrer'
 							aria-label='Visit our Youtube channel'
 						>
-							<Youtube size={25} className='text-primary hover:text-dark' />
+							<YoutubeIcon size={25} className='text-primary hover:text-dark' />
 						</Link>
 						<Link
 							to='https://linkedin.com'
@@ -154,7 +157,10 @@ const Footer = () => {
 							rel='noopener noreferrer'
 							aria-label='Visit our Linkedin page'
 						>
-							<Linkedin size={25} className='text-primary hover:text-dark' />
+							<LinkedinIcon
+								size={25}
+								className='text-primary hover:text-dark'
+							/>
 						</Link>
 					</div>
 				</div>

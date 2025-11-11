@@ -1,17 +1,4 @@
 import { useState, useEffect, useMemo } from 'react';
-import {
-	Calendar,
-	User,
-	Share2,
-	Facebook,
-	Linkedin,
-	Mail,
-	Bookmark,
-	Clock,
-	Loader,
-	Tag,
-	createLucideIcon,
-} from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 import { fetchArticleByCategorySlug } from '../features/articles/articleThunks';
@@ -24,18 +11,20 @@ import { calculateReadTime, formatDate } from '../utils/CommonFunctions';
 import { cacheArticle } from '../features/articles/articleSlice';
 import OptimizedImage from '../components/OptimizedImage';
 import SEOHead from '../components/SEOHead';
-
-const XIcon = createLucideIcon('X', [
-	[
-		'path',
-		{
-			key: 'path1',
-			d: 'M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z',
-			stroke: 'none',
-			fill: 'currentColor',
-		},
-	],
-]);
+import {
+	BookmarkIcon,
+	CalendarIcon,
+	ClockIcon,
+	FacebookIcon,
+	LinkedinIcon,
+	LoaderIcon,
+	MailIcon,
+	ShareIcon,
+	TagIcon,
+	UserIcon,
+	WhatsappIcon,
+	XTwitterIcon,
+} from '../components/Icons';
 
 const ArticlePage = () => {
 	const dispatch = useDispatch();
@@ -121,6 +110,9 @@ const ArticlePage = () => {
 			email: `mailto:?subject=${encodeURIComponent(
 				text
 			)}&body=${encodeURIComponent(url)}`,
+			whatsapp: `https://api.whatsapp.com/send?text=${encodeURIComponent(
+				text + ' ' + url
+			)}`,
 		};
 
 		if (shareUrls[platform]) {
@@ -146,7 +138,7 @@ const ArticlePage = () => {
 		return (
 			<div className='min-h-screen bg-gray-50 flex items-center justify-center'>
 				<div className='text-center'>
-					<Loader
+					<LoaderIcon
 						className='animate-spin text-red-600 mx-auto mb-4'
 						size={48}
 					/>
@@ -219,24 +211,24 @@ const ArticlePage = () => {
 							<div className='flex flex-wrap items-center gap-4 py-4 border-y border-gray-300 mb-6'>
 								{article.category && (
 									<div className='flex px-3 py-2 bg-green-200 text-green-800 text-xs font-semibold rounded'>
-										<Tag size={16} />
+										<TagIcon size={16} />
 										<span className='font-semibold ml-2'>
 											{article.category_name}
 										</span>
 									</div>
 								)}
 								<div className='flex px-3 py-2 bg-blue-200 text-gray-800 text-xs font-semibold rounded'>
-									<User size={16} />
+									<UserIcon size={16} />
 									<span className='font-semibold ml-2'>{article.author}</span>
 								</div>
 								<div className='flex items-center gap-2 text-sm text-gray-600'>
-									<Calendar size={16} />
+									<CalendarIcon size={16} />
 									<span>
 										{formatDate(article.published_at || article.created_at)}
 									</span>
 								</div>
 								<div className='flex items-center gap-2 text-sm text-gray-600'>
-									<Clock size={16} />
+									<ClockIcon size={16} />
 									<span>{calculateReadTime(article.content)} min read</span>
 								</div>
 							</div>
@@ -247,7 +239,7 @@ const ArticlePage = () => {
 										onClick={() => setShowShareMenu(!showShareMenu)}
 										className='flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition text-sm font-semibold'
 									>
-										<Share2 size={18} />
+										<ShareIcon size={18} />
 										Share
 									</button>
 
@@ -257,27 +249,35 @@ const ArticlePage = () => {
 												onClick={() => shareArticle('facebook')}
 												className='w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition text-sm'
 											>
-												<Facebook size={18} className='text-blue-600' />
+												<FacebookIcon size={18} className='text-blue-600' />
 												Facebook
 											</button>
 											<button
 												onClick={() => shareArticle('x')}
 												className='w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition text-sm'
 											>
-												<XIcon size={18} className='text-sky-500' />X
+												<XTwitterIcon size={18} className='text-sky-500' />X
 											</button>
 											<button
 												onClick={() => shareArticle('linkedin')}
 												className='w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition text-sm'
 											>
-												<Linkedin size={18} className='text-blue-700' />
+												<LinkedinIcon size={18} className='text-blue-700' />
 												LinkedIn
 											</button>
+											<button
+												onClick={() => shareArticle('whatsapp')}
+												className='w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition text-sm'
+											>
+												<WhatsappIcon size={18} className='text-green-700' />
+												Whatsapp
+											</button>
+
 											<button
 												onClick={() => shareArticle('email')}
 												className='w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition text-sm'
 											>
-												<Mail size={18} className='text-gray-600' />
+												<MailIcon size={18} className='text-gray-600' />
 												Email
 											</button>
 										</div>
@@ -292,7 +292,7 @@ const ArticlePage = () => {
 											: 'bg-white border-gray-300 text-gray-700 hover:border-gray-400'
 									}`}
 								>
-									<Bookmark
+									<BookmarkIcon
 										size={18}
 										fill={isBookmarked ? 'currentColor' : 'none'}
 									/>

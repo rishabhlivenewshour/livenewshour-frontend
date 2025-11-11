@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ArrowUp } from 'lucide-react';
+import { ArrowUpIcon } from './Icons';
 
 const BackToTop = () => {
 	const [isVisible, setIsVisible] = useState(false);
@@ -41,7 +41,7 @@ const BackToTop = () => {
 			aria-label='Back to top'
 			title='Back to top'
 		>
-			<ArrowUp size={24} />
+			<ArrowUpIcon size={24} />
 		</button>
 	);
 };

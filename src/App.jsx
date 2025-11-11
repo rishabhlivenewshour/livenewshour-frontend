@@ -2,16 +2,14 @@ import { useEffect, Suspense, lazy, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
-import { Loader } from 'lucide-react';
-
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ScrollToTop from './utils/ScrollToTop';
 import BackToTop from './components/BackToTop';
 import { fetchCategories } from './features/categories/categoryThunks';
 import { onNetworkChange, getNetworkInfo } from './utils/networkDetection';
-import ArticlesByTagPage from './pages/ArticlesByTagPage';
 import ErrorBoundary from './components/ErrorBoundary';
+import { LoaderIcon } from './components/Icons';
 
 // ✅ Lazy load route components
 const HomePage = lazy(() => import('./pages/HomePage'));
@@ -19,12 +17,13 @@ const ArticlePage = lazy(() => import('./pages/ArticlePage'));
 const ArticlesByCategoryPage = lazy(() =>
 	import('./pages/ArticlesByCatgeoryPage')
 );
+const ArticlesByTagPage = lazy(() => import('./pages/ArticlesByTagPage'));
 const SearchPage = lazy(() => import('./pages/SearchPage'));
 
 // Optional: lightweight loading screen
 const LoaderComponent = () => (
 	<div className='w-full h-screen flex justify-center items-center '>
-		<Loader className='animate-spin text-red-600 mx-auto mb-4' size={48} />
+		<LoaderIcon className='animate-spin text-red-600 mx-auto mb-4' size={48} />
 	</div>
 );
 
@@ -93,14 +92,14 @@ function App() {
 								element={<ArticlePage />}
 							/>
 							<Route path='/search' element={<SearchPage />} />
-							{/* <Route
+							<Route
 								path='*'
 								element={
 									<p className='w-full h-[280px] flex justify-center items-center text-2xl tracking-widest text-light font-semibold'>
 										Coming soon...
 									</p>
 								}
-							/> */}
+							/>
 						</Routes>
 					</Suspense>
 				</div>

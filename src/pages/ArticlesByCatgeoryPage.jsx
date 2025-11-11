@@ -7,12 +7,12 @@ import {
 } from '../features/articles/articleSelector';
 import { selectCategories } from '../features/categories/categorySelector';
 import BreakingNews from '../components/BreakingNews';
-import { Loader } from 'lucide-react';
 import { fetchArticlesByCategory } from '../features/articles/articleThunks';
 import NewsFeed from '../components/NewsFeed';
 import ArticleSkeleton from '../components/ArticleSkeleton';
 import { getOptimalPageSize } from '../utils/networkDetection';
 import SEOHead from '../components/SEOHead';
+import { LoaderIcon } from '../components/Icons';
 
 const ArticlesByCategoryPage = () => {
 	const dispatch = useDispatch();
@@ -117,7 +117,7 @@ const ArticlesByCategoryPage = () => {
 		return (
 			<div className='min-h-screen bg-gray-50 flex items-center justify-center'>
 				<div className='text-center'>
-					<Loader
+					<LoaderIcon
 						className='animate-spin text-red-600 mx-auto mb-4'
 						size={48}
 					/>
@@ -220,7 +220,7 @@ const ArticlesByCategoryPage = () => {
 						>
 							{articlesLoading ? (
 								<div className='flex flex-col items-center gap-3'>
-									<Loader className='animate-spin text-red-600' size={40} />
+									<LoaderIcon className='animate-spin text-red-600' size={40} />
 									<p className='text-gray-600 text-sm'>
 										Loading more articles...
 									</p>

@@ -1,11 +1,10 @@
-import { Loader } from 'lucide-react';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
 const HeroArticleCard = ({ article }) => {
 	return (
 		<div className='h-fit min-h-[120px] w-fit min-w-[150px]'>
-			{article ? (
+			{article && (
 				<Link
 					to={`/news/articles/${article.slug}`}
 					key={article.id}
@@ -29,13 +28,6 @@ const HeroArticleCard = ({ article }) => {
 						</p>
 					</div>
 				</Link>
-			) : (
-				<div className='text-center flex items-center justify-center'>
-					<Loader
-						className='animate-spin text-red-600 mx-auto mb-4'
-						size={18}
-					/>
-				</div>
 			)}
 		</div>
 	);

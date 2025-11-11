@@ -6,12 +6,12 @@ import {
 	selectArticlesLoading,
 } from '../features/articles/articleSelector';
 import BreakingNews from '../components/BreakingNews';
-import { Loader } from 'lucide-react';
 import { fetchArticlesByTag } from '../features/articles/articleThunks';
 import NewsFeed from '../components/NewsFeed';
 import ArticleSkeleton from '../components/ArticleSkeleton';
 import { getOptimalPageSize } from '../utils/networkDetection';
 import SEOHead from '../components/SEOHead';
+import { LoaderIcon } from '../components/Icons';
 
 const ArticlesByTagPage = () => {
 	const dispatch = useDispatch();
@@ -193,7 +193,7 @@ const ArticlesByTagPage = () => {
 						>
 							{isLoading ? (
 								<div className='flex flex-col items-center gap-3'>
-									<Loader className='animate-spin text-red-600' size={40} />
+									<LoaderIcon className='animate-spin text-red-600' size={40} />
 									<p className='text-gray-600 text-sm'>
 										Loading more articles...
 									</p>

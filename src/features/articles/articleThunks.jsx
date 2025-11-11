@@ -7,7 +7,7 @@ export const fetchArticles = createAsyncThunk(
 	async ({ page = 1, pageSize = 20 } = {}, { rejectWithValue }) => {
 		try {
 			const data = await apiClient(
-				`/news/articles/?page=${page}&page_size=${pageSize}`
+				`/news/articles/?is_published=true&page=${page}&page_size=${pageSize}`
 			);
 
 			// Pick only the required fields
@@ -57,7 +57,7 @@ export const fetchArticlesByCategory = createAsyncThunk(
 	async ({ categoryId, page = 1, pageSize = 20 }, { rejectWithValue }) => {
 		try {
 			const data = await apiClient(
-				`/news/categories/${categoryId}/articles/?page=${page}&page_size=${pageSize}`
+				`/news/categories/${categoryId}/articles/?is_published=true&page=${page}&page_size=${pageSize}`
 			);
 			return {
 				articles: data.results,
@@ -79,7 +79,9 @@ export const fetchArticleByCategorySlug = createAsyncThunk(
 	'articles/fetchByCategorySlug',
 	async (categorySlug, { rejectWithValue }) => {
 		try {
-			const data = await apiClient(`/news/articles/?slug=${categorySlug}`);
+			const data = await apiClient(
+				`/news/articles/?is_published=true&slug=${categorySlug}`
+			);
 			return data?.results[0];
 		} catch (error) {
 			return rejectWithValue(error.message);
@@ -93,7 +95,7 @@ export const fetchArticlesByTag = createAsyncThunk(
 	async ({ tag, page = 1, pageSize = 20 }, { rejectWithValue }) => {
 		try {
 			const data = await apiClient(
-				`/news/articles/?tag=${tag}&page=${page}&page_size=${pageSize}`
+				`/news/articles/?is_published=true&tag=${tag}&page=${page}&page_size=${pageSize}`
 			);
 			const filteredData = data?.results.map((article) => ({
 				id: article.id,
@@ -128,7 +130,7 @@ export const fetchArticlesBySearch = createAsyncThunk(
 	async ({ searchQuery, page = 1, pageSize = 20 }, { rejectWithValue }) => {
 		try {
 			const data = await apiClient(
-				`/news/articles/?search=${searchQuery}&page=${page}&page_size=${pageSize}`
+				`/news/articles/?is_published=true&search=${searchQuery}&page=${page}&page_size=${pageSize}`
 			);
 
 			const filteredData = data?.results.map((article) => ({
@@ -162,7 +164,9 @@ export const fetchFeaturedArticles = createAsyncThunk(
 	async (_, { rejectWithValue }) => {
 		try {
 			// Assuming your API supports filtering by tag
-			const data = await apiClient('/news/articles/?tag=featured&page_size=10');
+			const data = await apiClient(
+				'/news/articles/?is_published=true&tag=featured&page_size=10'
+			);
 
 			const filteredData = data?.results.map((article) => ({
 				id: article.id,

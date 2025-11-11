@@ -1,11 +1,10 @@
 import { Link } from 'react-router-dom';
 import { formatDate } from '../utils/CommonFunctions';
-import { Loader } from 'lucide-react';
 
 const BreakingNews = ({ breakingNews }) => {
 	return (
-		<div className='w-full h-full flex items-center justify-center'>
-			{breakingNews ? (
+		<div className='w-full h-full'>
+			{breakingNews && (
 				<Link
 					to={`/news/articles/${breakingNews.slug}`}
 					className='flex flex-col tracking-wide'
@@ -19,7 +18,7 @@ const BreakingNews = ({ breakingNews }) => {
 						}}
 					/>
 					<div className='mt-2'>
-						<h2 className='w-full font-semibold text-xl tracking-wider '>
+						<h2 className='w-full font-semibold text-xl tracking-wider'>
 							{breakingNews.title}
 						</h2>
 						<p className='w-[90%] text-base text-light h-13 overflow-hidden line-clamp-2'>
@@ -38,13 +37,6 @@ const BreakingNews = ({ breakingNews }) => {
 						</p>
 					</div>
 				</Link>
-			) : (
-				<div className='text-center flex items-center justify-center w-full min-h-[350px] '>
-					<Loader
-						className='animate-spin text-red-600 mx-auto mb-4'
-						size={48}
-					/>
-				</div>
 			)}
 		</div>
 	);
