@@ -93,7 +93,7 @@ const SearchPage = () => {
 			if (!debouncedSearchQuery) {
 				try {
 					const result = await dispatch(
-						fetchArticles({ page: 1, pageSize: 10 })
+						fetchArticles({ page: 1, pageSize: 20 })
 					).unwrap();
 					setRecentArticles(result.articles);
 				} catch (error) {
@@ -139,7 +139,7 @@ const SearchPage = () => {
 					<p className='text-gray-600 mb-6'>{articlesError}</p>
 					<button
 						onClick={() => window.history.back()}
-						className='px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-semibold'
+						className='px-6 py-3 bg-primary text-white rounded-lg hover:bg-secondary transition font-semibold'
 					>
 						Go Back
 					</button>

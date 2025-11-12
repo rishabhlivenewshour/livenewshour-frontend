@@ -37,7 +37,7 @@ const BackToTop = () => {
 	return (
 		<button
 			onClick={scrollToTop}
-			className='fixed bottom-8 right-8 p-3 bg-red-600 text-white rounded-full shadow-lg hover:bg-red-700 transition-all duration-300 transform hover:scale-110 z-50 animate-bounce-slow'
+			className='fixed bottom-8 right-8 p-3 bg-primary text-white rounded-full shadow-lg hover:bg-secondary transition-all duration-300 transform hover:scale-110 z-50 animate-bounce-slow'
 			aria-label='Back to top'
 			title='Back to top'
 		>

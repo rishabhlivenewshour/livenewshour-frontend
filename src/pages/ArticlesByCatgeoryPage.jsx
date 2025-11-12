@@ -141,7 +141,7 @@ const ArticlesByCategoryPage = () => {
 					</p>
 					<button
 						onClick={() => navigate(-1)}
-						className='px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-semibold'
+						className='px-6 py-3 bg-primary text-white rounded-lg hover:bg-secondary transition font-semibold'
 					>
 						Go Back
 					</button>

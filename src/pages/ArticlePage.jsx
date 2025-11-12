@@ -12,7 +12,6 @@ import { cacheArticle } from '../features/articles/articleSlice';
 import OptimizedImage from '../components/OptimizedImage';
 import SEOHead from '../components/SEOHead';
 import {
-	BookmarkIcon,
 	CalendarIcon,
 	ClockIcon,
 	FacebookIcon,
@@ -32,7 +31,7 @@ const ArticlePage = () => {
 
 	const [article, setArticle] = useState(null);
 	const [relatedArticles, setRelatedArticles] = useState([]);
-	const [isBookmarked, setIsBookmarked] = useState(false);
+	// const [isBookmarked, setIsBookmarked] = useState(false);
 	const [showShareMenu, setShowShareMenu] = useState(false);
 
 	const articlesLoading = useSelector(selectArticlesLoading);
@@ -86,12 +85,12 @@ const ArticlePage = () => {
 	}, [article]);
 
 	// Check bookmarked status from localStorage
-	useEffect(() => {
-		if (article?.id) {
-			const bookmarked = localStorage.getItem(`bookmark_${article.id}`);
-			setIsBookmarked(bookmarked === 'true');
-		}
-	}, [article?.id]);
+	// useEffect(() => {
+	// 	if (article?.id) {
+	// 		const bookmarked = localStorage.getItem(`bookmark_${article.id}`);
+	// 		setIsBookmarked(bookmarked === 'true');
+	// 	}
+	// }, [article?.id]);
 
 	const shareArticle = (platform) => {
 		const url = window.location.href;
@@ -121,11 +120,11 @@ const ArticlePage = () => {
 		setShowShareMenu(false);
 	};
 
-	const handleBookmark = () => {
-		const newBookmarkState = !isBookmarked;
-		setIsBookmarked(newBookmarkState);
-		localStorage.setItem(`bookmark_${article.id}`, newBookmarkState.toString());
-	};
+	// const handleBookmark = () => {
+	// 	const newBookmarkState = !isBookmarked;
+	// 	setIsBookmarked(newBookmarkState);
+	// 	localStorage.setItem(`bookmark_${article.id}`, newBookmarkState.toString());
+	// };
 
 	const purifiedContent = useMemo(() => {
 		if (!article?.content) return '';
@@ -162,7 +161,7 @@ const ArticlePage = () => {
 					</p>
 					<button
 						onClick={() => window.history.back()}
-						className='px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-semibold'
+						className='px-6 py-3 bg-primary text-white rounded-lg hover:bg-secondary transition font-semibold'
 					>
 						Go Back
 					</button>
@@ -192,7 +191,7 @@ const ArticlePage = () => {
 						<article className='lg:col-span-2'>
 							{article.tag && (
 								<div className='mb-4'>
-									<span className='inline-block px-4 py-1.5 bg-red-600 text-white text-sm font-bold rounded-md uppercase tracking-wide'>
+									<span className='inline-block px-4 py-1.5 bg-primary text-white text-sm font-bold rounded-md uppercase tracking-wide'>
 										{article.tag}
 									</span>
 								</div>
@@ -237,7 +236,7 @@ const ArticlePage = () => {
 								<div className='relative'>
 									<button
 										onClick={() => setShowShareMenu(!showShareMenu)}
-										className='flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition text-sm font-semibold'
+										className='flex items-center gap-2 px-4 py-2 bg-primary text-white rounded hover:bg-secondary transition text-sm font-semibold'
 									>
 										<ShareIcon size={18} />
 										Share
@@ -284,11 +283,11 @@ const ArticlePage = () => {
 									)}
 								</div>
 
-								<button
+								{/* <button
 									onClick={handleBookmark}
 									className={`flex items-center gap-2 px-4 py-2 rounded border transition text-sm font-semibold ${
 										isBookmarked
-											? 'bg-red-50 border-red-600 text-red-600'
+											? 'bg- border-red-600 text-red-600'
 											: 'bg-white border-gray-300 text-gray-700 hover:border-gray-400'
 									}`}
 								>
@@ -297,7 +296,7 @@ const ArticlePage = () => {
 										fill={isBookmarked ? 'currentColor' : 'none'}
 									/>
 									{isBookmarked ? 'Saved' : 'Save'}
-								</button>
+								</button> */}
 							</div>
 
 							{article.banner_image && (
