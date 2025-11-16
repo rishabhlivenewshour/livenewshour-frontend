@@ -12,6 +12,8 @@ import { selectCategories } from '../features/categories/categorySelector';
 import { fetchArticles } from '../features/articles/articleThunks';
 import ArticleSkeleton from '../components/ArticleSkeleton';
 import SEOHead from '../components/SEOHead';
+import FacebookFeed from '../components/FacebookFeed';
+import InstagramFeed from '../components/InstagramFeed';
 
 const HomePage = () => {
 	const dispatch = useDispatch();
@@ -44,8 +46,6 @@ const HomePage = () => {
 		);
 	}
 
-	const total_categories = categories.length;
-
 	return (
 		<>
 			<SEOHead
@@ -58,19 +58,11 @@ const HomePage = () => {
 					<h1 className='text-3xl font-semibold tracking-wider text-dark border-l-4 border-primary py-1.5 px-5 pt-3 uppercase'>
 						Headlines
 					</h1>
-					{/* HeroSection now handles its own loading state */}
 					<HeroSection />
 				</div>
 				<br className='h-[2px] bg-gray-200 w-full my-10'></br>
 				<div className='flex flex-col lg:flex-row gap-5 pt-5 pb-16'>
-					<div className='w-full lg:w-[20%] flex flex-row lg:flex-col flex-wrap lg:flex-nowrap gap-20 order-2 lg:order-1'>
-						{categories
-							.slice(Math.floor(total_categories / 2))
-							.map((category) => (
-								<NewsFeedByCategory key={category.id} category={category} />
-							))}
-					</div>
-					<div className='w-full lg:w-[60%] order-1 lg:order-2'>
+					<div className='w-full lg:w-[60%]'>
 						{articlesLoading && articles.length === 0 ? (
 							<>
 								<h2 className='text-2xl font-semibold tracking-wider text-dark border-l-4 border-primary py-1 px-3 mb-5 uppercase'>
@@ -105,12 +97,34 @@ const HomePage = () => {
 							</>
 						)}
 					</div>
-					<div className='w-full lg:w-[20%] flex flex-row lg:flex-col gap-10 flex-wrap lg:flex-nowrap order-3 lg:order-3'>
-						{categories
-							.slice(0, Math.floor(total_categories / 2))
-							.map((category) => (
+					<div className='w-full lg:w-[40%] flex flex-row lg:flex-col gap-10 flex-wrap lg:flex-nowrap'>
+						<div className='pl-0 lg:pl-[20px]'>
+							<FacebookFeed />
+						</div>
+						<div className='pl-0 lg:pl-[20px]'>
+							<InstagramFeed />
+						</div>
+						<div className='grid grid-cols-1 sm:grid-cols-2 gap-5'>
+							{categories.slice(0, 12).map((category) => (
 								<NewsFeedByCategory key={category.id} category={category} />
 							))}
+						</div>
+						{/* <div className='flex gap-5'>
+							<div className='w-full flex flex-row lg:flex-col flex-wrap lg:flex-nowrap gap-20 order-2 lg:order-1'>
+								{categories
+									.slice(Math.floor(total_categories / 2))
+									.map((category) => (
+										<NewsFeedByCategory key={category.id} category={category} />
+									))}
+							</div>
+							<div className='w-full flex flex-row lg:flex-col flex-wrap lg:flex-nowrap gap-20 order-2 lg:order-1'>
+								{categories
+									.slice(0, Math.floor(total_categories / 2))
+									.map((category) => (
+										<NewsFeedByCategory key={category.id} category={category} />
+									))}
+							</div>
+						</div> */}
 					</div>
 				</div>
 			</div>

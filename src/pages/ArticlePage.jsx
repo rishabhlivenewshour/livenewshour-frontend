@@ -16,11 +16,9 @@ import {
 	ClockIcon,
 	CopyIcon,
 	FacebookIcon,
-	InstagramIcon,
 	LinkedinIcon,
 	LoaderIcon,
 	MailIcon,
-	ShareIcon,
 	TagIcon,
 	TickIcon,
 	UserIcon,
@@ -142,6 +140,12 @@ const ArticlePage = () => {
 		const cleaned = article.content.replace(/\\"/g, '"');
 		return DOMPurify.sanitize(cleaned);
 	}, [article?.content]);
+
+	const purifiedSecondaryContent = useMemo(() => {
+		if (!article?.secondary_content) return '';
+		const cleaned = article.secondary_content.replace(/\\"/g, '"');
+		return DOMPurify.sanitize(cleaned);
+	}, [article?.secondary_content]);
 
 	// Loading State
 	if (articlesLoading) {
@@ -325,6 +329,29 @@ const ArticlePage = () => {
 								/>
 							</div>
 
+							{article.secondary_banner_image && (
+								<figure className='mb-8'>
+									<OptimizedImage
+										src={article.secondary_banner_image}
+										alt={article.title}
+										className='w-full h-auto rounded-lg shadow-lg'
+										onError={(e) => {
+											e.target.style.display = 'none';
+										}}
+									/>
+								</figure>
+							)}
+							{article.secondary_content && (
+								<div className='editor-content prose prose-lg max-w-none mb-12'>
+									<div
+										className='text-gray-800 leading-relaxed'
+										dangerouslySetInnerHTML={{
+											__html: purifiedSecondaryContent,
+										}}
+									/>
+								</div>
+							)}
+
 							{article.related_keywords &&
 								article.related_keywords.length > 0 && (
 									<div className='border-t border-gray-300 pt-6 mb-8 flex flex-wrap gap-4'>
@@ -333,7 +360,7 @@ const ArticlePage = () => {
 											{article.related_keywords.map((keyword, index) => (
 												<span
 													key={`${keyword}-${index}`}
-													className='px-2 py-1 bg-gray-200 rounded text-gray-800'
+													className='px-2 py-1 bg-gray-500 text-white rounded'
 												>
 													{keyword}
 												</span>

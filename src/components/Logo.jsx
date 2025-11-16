@@ -1,10 +1,9 @@
-import LogoVideo from '../assets/logo.mp4';
+import LogoVideo from '../assets/logo2.mp4';
 
 const Logo = () => {
 	return (
 		<video
-			autoPlay
-			loop
+			autoPlay			
 			muted
 			playsInline
 			className='h-[70px] lg:h-[85px] w-[250px]'
