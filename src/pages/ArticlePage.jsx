@@ -16,6 +16,7 @@ import {
 	ClockIcon,
 	CopyIcon,
 	FacebookIcon,
+	InstagramIcon,
 	LinkedinIcon,
 	LoaderIcon,
 	MailIcon,
@@ -126,6 +127,20 @@ const ArticlePage = () => {
 
 		if (shareUrls[platform]) {
 			window.open(shareUrls[platform], '_blank', 'width=600,height=400');
+		}
+	};
+
+	const shareOnInstagram = () => {
+		if (navigator.share) {
+			navigator
+				.share({
+					title: article?.title,
+					text: article?.title,
+					url: window.location.href,
+				})
+				.catch((err) => console.log(err));
+		} else {
+			alert('Instagram sharing is only supported on mobile devices.');
 		}
 	};
 
@@ -260,6 +275,12 @@ const ArticlePage = () => {
 										className='h-[40px] w-[40px] flex items-center justify-center bg-green-700 text-white rounded-full hover:bg-green-800 transition text-sm font-semibold'
 									>
 										<WhatsappIcon size={22} className='' />
+									</button>
+									<button
+										onClick={shareOnInstagram}
+										className='h-[40px] w-[40px] flex items-center justify-center bg-gradient-to-r from-[#833ab4] via-[#fd1d1d] to-[#fcb045] text-white rounded-full hover:bg-[#8C3AAA] transition text-sm font-semibold'
+									>
+										<InstagramIcon size={22} className='' />
 									</button>
 									<button
 										onClick={() => shareArticle('x')}
