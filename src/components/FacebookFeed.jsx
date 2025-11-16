@@ -8,7 +8,7 @@ function FacebookIcon({ size = 24 }) {
 	);
 }
 const FacebookFeed = ({
-	pageUrl = 'https://www.facebook.com/facebook',
+	pageUrl = 'https://www.facebook.com/livenewshour',
 	pageName = 'livenewshour',
 }) => {
 	useEffect(() => {
