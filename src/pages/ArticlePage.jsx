@@ -14,16 +14,37 @@ import SEOHead from '../components/SEOHead';
 import {
 	CalendarIcon,
 	ClockIcon,
+	CopyIcon,
 	FacebookIcon,
+	InstagramIcon,
 	LinkedinIcon,
 	LoaderIcon,
 	MailIcon,
 	ShareIcon,
 	TagIcon,
+	TickIcon,
 	UserIcon,
 	WhatsappIcon,
 	XTwitterIcon,
 } from '../components/Icons';
+
+const getShareUrls = (url, text) => ({
+	facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+		url
+	)}`,
+	x: `https://x.com/intent/tweet?url=${encodeURIComponent(
+		url
+	)}&text=${encodeURIComponent(text)}`,
+	linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+		url
+	)}`,
+	email: `mailto:?subject=${encodeURIComponent(text)}&body=${encodeURIComponent(
+		url
+	)}`,
+	whatsapp: `https://api.whatsapp.com/send?text=${encodeURIComponent(
+		text + ' ' + url
+	)}`,
+});
 
 const ArticlePage = () => {
 	const dispatch = useDispatch();
@@ -32,7 +53,7 @@ const ArticlePage = () => {
 	const [article, setArticle] = useState(null);
 	const [relatedArticles, setRelatedArticles] = useState([]);
 	// const [isBookmarked, setIsBookmarked] = useState(false);
-	const [showShareMenu, setShowShareMenu] = useState(false);
+	const [copied, setCopied] = useState(false);
 
 	const articlesLoading = useSelector(selectArticlesLoading);
 	const articlesError = useSelector(selectArticlesError);
@@ -41,8 +62,6 @@ const ArticlePage = () => {
 	useEffect(() => {
 		const fetchArticle = async () => {
 			try {
-				// Try to get article ID from URL slug (you might need to add an endpoint for this)
-				// For now, we'll fetch by ID if available
 				const response = await dispatch(
 					fetchArticleByCategorySlug(article_slug)
 				).unwrap();
@@ -56,7 +75,7 @@ const ArticlePage = () => {
 		fetchArticle();
 	}, [article_slug, dispatch]);
 
-	// Fetch related articles (limit to 3)
+	// Fetch related articles
 	useEffect(() => {
 		const fetchRelatedArticles = async () => {
 			if (article?.category) {
@@ -92,32 +111,24 @@ const ArticlePage = () => {
 	// 	}
 	// }, [article?.id]);
 
+	const handleCopy = () => {
+		navigator.clipboard.writeText(window.location.href);
+		setCopied(true);
+
+		setTimeout(() => {
+			setCopied(false);
+		}, 3000);
+	};
+
 	const shareArticle = (platform) => {
 		const url = window.location.href;
 		const text = article?.title || '';
 
-		const shareUrls = {
-			facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-				url
-			)}`,
-			x: `https://x.com/intent/tweet?url=${encodeURIComponent(
-				url
-			)}&text=${encodeURIComponent(text)}`,
-			linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-				url
-			)}`,
-			email: `mailto:?subject=${encodeURIComponent(
-				text
-			)}&body=${encodeURIComponent(url)}`,
-			whatsapp: `https://api.whatsapp.com/send?text=${encodeURIComponent(
-				text + ' ' + url
-			)}`,
-		};
+		const shareUrls = getShareUrls(url, text);
 
 		if (shareUrls[platform]) {
 			window.open(shareUrls[platform], '_blank', 'width=600,height=400');
 		}
-		setShowShareMenu(false);
 	};
 
 	// const handleBookmark = () => {
@@ -232,55 +243,48 @@ const ArticlePage = () => {
 								</div>
 							</div>
 
-							<div className='flex items-center gap-3 mb-8'>
-								<div className='relative'>
+							<div className='flex items-center justify-end gap-3 mb-8'>
+								<div className='flex gap-2'>
 									<button
-										onClick={() => setShowShareMenu(!showShareMenu)}
-										className='flex items-center gap-2 px-4 py-2 bg-primary text-white rounded hover:bg-secondary transition text-sm font-semibold'
+										onClick={() => shareArticle('facebook')}
+										className='h-[40px] w-[40px] flex items-center justify-center bg-blue-600 text-white rounded-full hover:bg-blue-700 transition text-sm font-semibold'
 									>
-										<ShareIcon size={18} />
-										Share
+										<FacebookIcon size={22} className='' />
 									</button>
-
-									{showShareMenu && (
-										<div className='absolute top-full left-0 mt-2 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-10 min-w-[160px]'>
-											<button
-												onClick={() => shareArticle('facebook')}
-												className='w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition text-sm'
-											>
-												<FacebookIcon size={18} className='text-blue-600' />
-												Facebook
-											</button>
-											<button
-												onClick={() => shareArticle('x')}
-												className='w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition text-sm'
-											>
-												<XTwitterIcon size={18} className='text-sky-500' />X
-											</button>
-											<button
-												onClick={() => shareArticle('linkedin')}
-												className='w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition text-sm'
-											>
-												<LinkedinIcon size={18} className='text-blue-700' />
-												LinkedIn
-											</button>
-											<button
-												onClick={() => shareArticle('whatsapp')}
-												className='w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition text-sm'
-											>
-												<WhatsappIcon size={18} className='text-green-700' />
-												Whatsapp
-											</button>
-
-											<button
-												onClick={() => shareArticle('email')}
-												className='w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition text-sm'
-											>
-												<MailIcon size={18} className='text-gray-600' />
-												Email
-											</button>
-										</div>
-									)}
+									<button
+										onClick={() => shareArticle('whatsapp')}
+										className='h-[40px] w-[40px] flex items-center justify-center bg-green-700 text-white rounded-full hover:bg-green-800 transition text-sm font-semibold'
+									>
+										<WhatsappIcon size={22} className='' />
+									</button>
+									<button
+										onClick={() => shareArticle('x')}
+										className='h-[40px] w-[40px] flex items-center justify-center bg-gray-800 text-white rounded-full hover:bg-gray-900 transition text-sm font-semibold'
+									>
+										<XTwitterIcon size={22} className='' />
+									</button>
+									<button
+										onClick={() => shareArticle('linkedin')}
+										className='h-[40px] w-[40px] flex items-center justify-center bg-blue-700 text-white rounded-full hover:bg-blue-800 transition text-sm font-semibold'
+									>
+										<LinkedinIcon size={22} className='' />
+									</button>
+									<button
+										onClick={() => shareArticle('email')}
+										className='h-[40px] w-[40px] flex items-center justify-center bg-red-600 text-white rounded-full hover:bg-red-700 transition text-sm font-semibold'
+									>
+										<MailIcon size={22} className='' />
+									</button>
+									<button
+										onClick={handleCopy}
+										className='h-[40px] w-[40px] flex items-center justify-center bg-gray-600 text-white rounded-full hover:bg-gray-700 transition text-sm font-semibold'
+									>
+										{copied ? (
+											<TickIcon size={22} className='' />
+										) : (
+											<CopyIcon size={22} className='' />
+										)}
+									</button>
 								</div>
 
 								{/* <button

@@ -4,13 +4,7 @@ import { processvalue } from '../utils/CommonFunctions';
 import Logo from './Logo';
 import { useSelector } from 'react-redux';
 import { selectCategories } from '../features/categories/categorySelector';
-import {
-	FacebookIcon,
-	InstagramIcon,
-	LinkedinIcon,
-	XTwitterIcon,
-	YoutubeIcon,
-} from './Icons';
+import { FacebookIcon, InstagramIcon, XTwitterIcon } from './Icons';
 
 const Footer = () => {
 	const categories = useSelector(selectCategories);
@@ -20,7 +14,7 @@ const Footer = () => {
 				<div className='w-full sm:w-1/4 relative'>
 					<Link
 						to='/'
-						className='absolute left-[-53px] sm:left-[-40px] top-[-20px]'
+						className='absolute left-[-40px] sm:left-[-20px] top-[-30px]'
 						aria-label='Logo'
 					>
 						{/* <OptimizedImage
@@ -94,7 +88,7 @@ const Footer = () => {
 
 				{/* Section 4: Newsletter */}
 				<div>
-					<p className='font-bold mb-2 text-dark'>Newsletter</p>
+					{/* <p className='font-bold mb-2 text-dark'>Newsletter</p>
 					<p className='mb-2'>Stay informed with our top headlines.</p>
 					<div className='flex w-full'>
 						<input
@@ -105,45 +99,39 @@ const Footer = () => {
 						<button className='bg-primary px-4 rounded-r-md text-back'>
 							Subscribe
 						</button>
-					</div>
-					<p className='font-semibold mb-2 text-dark mt-3'>
+					</div> */}
+					<p className='font-semibold mb-2 text-dark'>
 						Follow us on Social Media
 					</p>
 					<div className='flex gap-5 text-gray-400'>
 						<Link
-							to='https://facebook.com'
+							to='https://www.facebook.com/livenewshour'
 							target='_blank'
 							rel='noopener noreferrer'
 							aria-label='Visit our Facebook page'
+							className='h-[42px] w-[42px] flex items-center justify-center bg-blue-600 text-white rounded-full hover:bg-blue-700 transition text-sm font-semibold'
 						>
-							<FacebookIcon
-								size={25}
-								className='text-primary hover:text-dark'
-							/>
+							<FacebookIcon size={24} className='' />
 						</Link>
 						<Link
-							to='https://x.com'
-							target='_blank'
-							rel='noopener noreferrer'
-							aria-label='Visit our X handle'
-						>
-							<XTwitterIcon
-								size={25}
-								className='text-primary hover:text-dark'
-							/>
-						</Link>
-						<Link
-							to='https://instagram.com'
+							to='https://www.instagram.com/livenewshour'
 							target='_blank'
 							rel='noopener noreferrer'
 							aria-label='Visit our Instagram profile'
+							className='h-[42px] w-[42px] flex items-center justify-center bg-gradient-to-r from-[#833ab4] via-[#fd1d1d] to-[#fcb045] text-white rounded-full hover:bg-[#8C3AAA] transition text-sm font-semibold'
 						>
-							<InstagramIcon
-								size={25}
-								className='text-primary hover:text-dark'
-							/>
+							<InstagramIcon size={24} className='' />
 						</Link>
 						<Link
+							to='https://x.com/livenewshour'
+							target='_blank'
+							rel='noopener noreferrer'
+							aria-label='Visit our X handle'
+							className='h-[42px] w-[42px] flex items-center justify-center bg-gray-800 text-white rounded-full hover:bg-gray-900 transition text-sm font-semibold'
+						>
+							<XTwitterIcon size={24} className='' />
+						</Link>
+						{/* <Link
 							to='https://youtube.com'
 							target='_blank'
 							rel='noopener noreferrer'
@@ -161,7 +149,7 @@ const Footer = () => {
 								size={25}
 								className='text-primary hover:text-dark'
 							/>
-						</Link>
+						</Link> */}
 					</div>
 				</div>
 			</div>

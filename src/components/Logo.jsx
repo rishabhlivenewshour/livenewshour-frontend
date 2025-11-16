@@ -7,7 +7,7 @@ const Logo = () => {
 			loop
 			muted
 			playsInline
-			className='h-[60px] lg:h-[70px] w-[250px]'
+			className='h-[70px] lg:h-[85px] w-[250px]'
 			
 		>
 			<source src={LogoVideo} type='video/mp4' />

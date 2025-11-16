@@ -24,7 +24,7 @@ const Navbar = () => {
 
 	return (
 		<div className='relative w-full bg-back'>
-			<nav className='relative flex items-center justify-between p-3 px-[5vw] pl-[2vw] sm:pr-[40px] z-[100] bg-primary h-[60px] lg:h-[70px]'>
+			<nav className='relative flex items-center justify-between p-3 px-[5vw] pl-[2vw] sm:pr-[40px] z-[100] bg-primary h-[70px] lg:h-[85px]'>
 				<button
 					onClick={toogleMenu}
 					className={`rounded-md active:scale-95 transition-all duration-300 ease-in-out p-1 border-2 ${
