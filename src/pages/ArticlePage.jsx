@@ -130,28 +130,17 @@ const ArticlePage = () => {
 		}
 	};
 
-	const shareOnInstagram = (url) => {
-		navigator.clipboard.writeText(url);
-		window.location.href = 'instagram://app';
-	};
-
-	const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
 	const handleInstagramShare = () => {
+		const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
 		if (isMobile) {
-			shareOnInstagram(); // native
+			navigator.clipboard.writeText(window.location.href);
+			alert('Link copied! Opening Instagram...');
+			setTimeout(() => {
+				window.location.href = 'instagram://app';
+			}, 500);
 		} else {
-			if (navigator.share) {
-				navigator
-					.share({
-						title: article?.title,
-						text: article?.title,
-						url: window.location.href,
-					})
-					.catch((err) => console.log(err));
-			} else {
-				alert('Instagram sharing is only supported on mobile devices.');
-			}
+			alert('Instagram sharing is only available on mobile devices.');
 		}
 	};
 
