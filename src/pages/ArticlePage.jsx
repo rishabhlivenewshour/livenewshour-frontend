@@ -135,12 +135,37 @@ const ArticlePage = () => {
 			navigator
 				.share({
 					title: article?.title,
-					text: article?.title,
+					text: article?.summary,
 					url: window.location.href,
 				})
-				.catch((err) => console.log(err));
+				.catch(() => {});
 		} else {
-			alert('Instagram sharing is only supported on mobile devices.');
+			window.location.href = `instagram://library?AssetPath=${encodeURIComponent(
+				article.banner_image
+			)}`;
+		}
+	};
+
+	const downloadImage = (url) => {
+		const link = document.createElement('a');
+		link.href = url;
+		link.download = 'share-image.jpg';
+		link.click();
+	};
+
+	const copyCaption = (text) => {
+		navigator.clipboard.writeText(text);
+	};
+
+	const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+	const handleInstagramShare = () => {
+		if (isMobile) {
+			shareOnInstagram(); // native
+		} else {
+			downloadImage(article.banner_image);
+			copyCaption(`${article.title}\n${window.location.href}`);
+			alert('Image downloaded and caption copied. Open Instagram to post.');
 		}
 	};
 
@@ -277,7 +302,7 @@ const ArticlePage = () => {
 										<WhatsappIcon size={22} className='' />
 									</button>
 									<button
-										onClick={shareOnInstagram}
+										onClick={handleInstagramShare}
 										className='h-[40px] w-[40px] flex items-center justify-center bg-gradient-to-r from-[#833ab4] via-[#fd1d1d] to-[#fcb045] text-white rounded-full hover:bg-[#8C3AAA] transition text-sm font-semibold'
 									>
 										<InstagramIcon size={22} className='' />
