@@ -130,31 +130,9 @@ const ArticlePage = () => {
 		}
 	};
 
-	const shareOnInstagram = () => {
-		if (navigator.share) {
-			navigator
-				.share({
-					title: article?.title,
-					text: article?.summary,
-					url: window.location.href,
-				})
-				.catch(() => {});
-		} else {
-			window.location.href = `instagram://library?AssetPath=${encodeURIComponent(
-				article.banner_image
-			)}`;
-		}
-	};
-
-	const downloadImage = (url) => {
-		const link = document.createElement('a');
-		link.href = url;
-		link.download = 'share-image.jpg';
-		link.click();
-	};
-
-	const copyCaption = (text) => {
-		navigator.clipboard.writeText(text);
+	const shareOnInstagram = (url) => {
+		navigator.clipboard.writeText(url);
+		window.location.href = 'instagram://app';
 	};
 
 	const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -163,9 +141,17 @@ const ArticlePage = () => {
 		if (isMobile) {
 			shareOnInstagram(); // native
 		} else {
-			downloadImage(article.banner_image);
-			copyCaption(`${article.title}\n${window.location.href}`);
-			alert('Image downloaded and caption copied. Open Instagram to post.');
+			if (navigator.share) {
+				navigator
+					.share({
+						title: article?.title,
+						text: article?.title,
+						url: window.location.href,
+					})
+					.catch((err) => console.log(err));
+			} else {
+				alert('Instagram sharing is only supported on mobile devices.');
+			}
 		}
 	};
 
