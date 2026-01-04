@@ -1,4 +1,4 @@
-import LogoVideo from '../assets/logo2.mp4';
+import LogoVideo from '../../assets/logo2.mp4';
 
 const Logo = () => {
 	return (

@@ -1,10 +1,10 @@
-import { selectArticles } from '../features/articles/articleSelector';
+import { selectArticles } from '../../features/articles/articleSelector';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchArticleById } from '../features/articles/articleThunks';
+import { fetchArticleById } from '../../features/articles/articleThunks';
 import { useEffect, useState } from 'react';
 import BreakingNews from './BreakingNews';
-import HeroArticleCard from './HeroArticleCard';
-import ArticleSkeleton from './ArticleSkeleton';
+import HeroArticleCard from '../articles/HeroArticleCard';
+import ArticleSkeleton from '../articles/ArticleSkeleton';
 
 const HeroSection = () => {
 	const dispatch = useDispatch();

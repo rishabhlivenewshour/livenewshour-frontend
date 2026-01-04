@@ -6,13 +6,13 @@ import {
 	selectArticlesLoading,
 } from '../features/articles/articleSelector';
 import { selectCategories } from '../features/categories/categorySelector';
-import BreakingNews from '../components/BreakingNews';
+import BreakingNews from '../components/feeds/BreakingNews';
 import { fetchArticlesByCategory } from '../features/articles/articleThunks';
-import NewsFeed from '../components/NewsFeed';
-import ArticleSkeleton from '../components/ArticleSkeleton';
+import NewsFeed from '../components/feeds/NewsFeed';
+import ArticleSkeleton from '../components/articles/ArticleSkeleton';
 import { getOptimalPageSize } from '../utils/networkDetection';
-import SEOHead from '../components/SEOHead';
-import { LoaderIcon } from '../components/Icons';
+import SEOHead from '../components/seo/SEOHead';
+import { LoaderIcon } from '../components/common/Icons';
 
 const ArticlesByCategoryPage = () => {
 	const dispatch = useDispatch();

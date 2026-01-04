@@ -63,7 +63,7 @@ const FacebookFeed = ({
 				<div className='p-6 bg-gray-50'>
 					<div id='fb-root'></div>
 					<div
-						className='fb-page'
+						className='fb-page ml-2'
 						data-href={pageUrl}
 						data-tabs='timeline'
 						data-width='340'

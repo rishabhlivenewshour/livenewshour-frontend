@@ -1,20 +1,20 @@
 import { useEffect } from 'react';
-import HeroSection from '../components/HeroSection';
-import NewsFeed from '../components/NewsFeed';
+import HeroSection from '../components/feeds/HeroSection';
+import NewsFeed from '../components/feeds/NewsFeed';
 import { useSelector, useDispatch } from 'react-redux';
 import {
 	selectArticles,
 	selectArticlesError,
 	selectArticlesLoading,
 } from '../features/articles/articleSelector';
-import NewsFeedByCategory from '../components/NewsFeedByCategory';
+import NewsFeedByCategory from '../components/feeds/NewsFeedByCategory';
 import { selectCategories } from '../features/categories/categorySelector';
 import { fetchArticles } from '../features/articles/articleThunks';
-import ArticleSkeleton from '../components/ArticleSkeleton';
-import SEOHead from '../components/SEOHead';
-import FacebookFeed from '../components/FacebookFeed';
-import InstagramFeed from '../components/InstagramFeed';
-import YoutubeFeed from '../components/YoutubeFeed';
+import ArticleSkeleton from '../components/articles/ArticleSkeleton';
+import SEOHead from '../components/seo/SEOHead';
+import FacebookFeed from '../components/social/FacebookFeed';
+import InstagramFeed from '../components/social/InstagramFeed';
+import YoutubeFeed from '../components/social/YoutubeFeed';
 
 const HomePage = () => {
 	const dispatch = useDispatch();

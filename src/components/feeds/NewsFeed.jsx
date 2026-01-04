@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import OptimizedImage from './OptimizedImage';
+import OptimizedImage from '../common/OptimizedImage';
 
 const NewsFeed = ({ heading, newsArray }) => {
 	return (

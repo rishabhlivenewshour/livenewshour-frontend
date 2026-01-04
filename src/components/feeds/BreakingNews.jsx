@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { formatDate } from '../utils/CommonFunctions';
+import { formatDate } from '../../utils/CommonFunctions';
 
 const BreakingNews = ({ breakingNews }) => {
 	return (

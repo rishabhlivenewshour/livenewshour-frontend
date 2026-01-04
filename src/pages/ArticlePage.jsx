@@ -9,8 +9,8 @@ import {
 } from '../features/articles/articleSelector';
 import { calculateReadTime, formatDate } from '../utils/CommonFunctions';
 import { cacheArticle } from '../features/articles/articleSlice';
-import OptimizedImage from '../components/OptimizedImage';
-import SEOHead from '../components/SEOHead';
+import OptimizedImage from '../components/common/OptimizedImage';
+import SEOHead from '../components/seo/SEOHead';
 import {
 	CalendarIcon,
 	ClockIcon,
@@ -25,7 +25,7 @@ import {
 	UserIcon,
 	WhatsappIcon,
 	XTwitterIcon,
-} from '../components/Icons';
+} from '../components/common/Icons';
 
 const getShareUrls = (url, text) => ({
 	facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(

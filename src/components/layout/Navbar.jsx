@@ -3,13 +3,13 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import SideMenu from './SideMenu';
-import Logo from './Logo';
-import { MenuIcon, SearchIcon, XIcon } from './Icons';
+import Logo from '../common/Logo';
+import { MenuIcon, SearchIcon, XIcon } from '../common/Icons';
 
 import {
 	selectCategories,
 	selectCategoriesLoading,
-} from '../features/categories/categorySelector';
+} from '../../features/categories/categorySelector';
 
 const Navbar = () => {
 	const location = useLocation().pathname;

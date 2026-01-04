@@ -1,6 +1,6 @@
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { selectCategories } from '../features/categories/categorySelector';
+import { selectCategories } from '../../features/categories/categorySelector';
 
 const SideMenu = ({ setShowMenu }) => {
 	const location = useLocation().pathname;

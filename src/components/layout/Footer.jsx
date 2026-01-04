@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
-import { processvalue } from '../utils/CommonFunctions';
+import { processvalue } from '../../utils/CommonFunctions';
 
-import Logo from './Logo';
+import Logo from '../common/Logo';
 import { useSelector } from 'react-redux';
-import { selectCategories } from '../features/categories/categorySelector';
-import { FacebookIcon, InstagramIcon, XTwitterIcon } from './Icons';
+import { selectCategories } from '../../features/categories/categorySelector';
+import { FacebookIcon, InstagramIcon, XTwitterIcon } from '../common/Icons';
 
 const Footer = () => {
 	const categories = useSelector(selectCategories);

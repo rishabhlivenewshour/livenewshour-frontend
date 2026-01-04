@@ -2,14 +2,14 @@ import { useEffect, Suspense, lazy, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
+import Navbar from './components/layout/Navbar';
+import Footer from './components/layout/Footer';
 import ScrollToTop from './utils/ScrollToTop';
-import BackToTop from './components/BackToTop';
+import BackToTop from './components/layout/BackToTop';
 import { fetchCategories } from './features/categories/categoryThunks';
 import { onNetworkChange, getNetworkInfo } from './utils/networkDetection';
-import ErrorBoundary from './components/ErrorBoundary';
-import { LoaderIcon } from './components/Icons';
+import ErrorBoundary from './components/error/ErrorBoundary';
+import { LoaderIcon } from './components/common/Icons';
 
 // ✅ Lazy load route components
 const HomePage = lazy(() => import('./pages/HomePage'));

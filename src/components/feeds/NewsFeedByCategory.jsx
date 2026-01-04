@@ -1,9 +1,9 @@
 import { useEffect, useState, useRef } from 'react';
-import { fetchArticlesByCategory } from '../features/articles/articleThunks';
+import { fetchArticlesByCategory } from '../../features/articles/articleThunks';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import OptimizedImage from './OptimizedImage';
-import { ChevronRightIcon } from './Icons';
+import OptimizedImage from '../common/OptimizedImage';
+import { ChevronRightIcon } from '../common/Icons';
 
 const NewsFeedByCategory = ({ category }) => {
 	const dispatch = useDispatch();

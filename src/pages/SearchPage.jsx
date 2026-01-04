@@ -7,17 +7,17 @@ import {
 	selectArticlesLoading,
 } from '../features/articles/articleSelector';
 import { selectCategories } from '../features/categories/categorySelector';
-import NewsFeedByCategory from '../components/NewsFeedByCategory';
+import NewsFeedByCategory from '../components/feeds/NewsFeedByCategory';
 import {
 	fetchArticlesBySearch,
 	fetchArticles,
 } from '../features/articles/articleThunks';
 import { clearSearchResults } from '../features/articles/articleSlice';
-import ArticleSkeleton from '../components/ArticleSkeleton';
+import ArticleSkeleton from '../components/articles/ArticleSkeleton';
 import { getOptimalPageSize } from '../utils/networkDetection';
-import OptimizedImage from '../components/OptimizedImage';
-import SEOHead from '../components/SEOHead';
-import { LoaderIcon, SearchIcon } from '../components/Icons';
+import OptimizedImage from '../components/common/OptimizedImage';
+import SEOHead from '../components/seo/SEOHead';
+import { LoaderIcon, SearchIcon } from '../components/common/Icons';
 
 const SearchPage = () => {
 	const dispatch = useDispatch();
