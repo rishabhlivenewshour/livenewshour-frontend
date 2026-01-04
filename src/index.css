@@ -25,6 +25,9 @@ button {
 	color: #ffffff;
 }
 
+/* .editor-content {
+	font-family: 'Poppins', sans-serif !important;
+} */
 .editor-content h1 {
 	font-size: 2em !important;
 	font-weight: 700 !important;

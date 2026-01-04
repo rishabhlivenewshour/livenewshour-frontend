@@ -14,6 +14,7 @@ import ArticleSkeleton from '../components/ArticleSkeleton';
 import SEOHead from '../components/SEOHead';
 import FacebookFeed from '../components/FacebookFeed';
 import InstagramFeed from '../components/InstagramFeed';
+import YoutubeFeed from '../components/YoutubeFeed';
 
 const HomePage = () => {
 	const dispatch = useDispatch();
@@ -25,7 +26,7 @@ const HomePage = () => {
 	// Fetch only first page of articles (20 articles)
 	useEffect(() => {
 		if (articles.length === 0) {
-			dispatch(fetchArticles({ page: 1, pageSize: 20 }));
+			dispatch(fetchArticles({ page: 1, pageSize: 30 }));
 		}
 	}, [dispatch, articles.length]);
 
@@ -69,7 +70,7 @@ const HomePage = () => {
 									Latest Stories
 								</h2>
 								<div className='grid grid-cols-1 gap-6 mb-10'>
-									{[...Array(5)].map((_, i) => (
+									{[...Array(10)].map((_, i) => (
 										<ArticleSkeleton key={i} variant='list' />
 									))}
 								</div>
@@ -78,7 +79,7 @@ const HomePage = () => {
 									Most Read
 								</h2>
 								<div className='grid grid-cols-1 gap-6'>
-									{[...Array(5)].map((_, i) => (
+									{[...Array(10)].map((_, i) => (
 										<ArticleSkeleton key={i} variant='list' />
 									))}
 								</div>
@@ -87,12 +88,12 @@ const HomePage = () => {
 							<>
 								<NewsFeed
 									heading='Latest Stories'
-									newsArray={articles.slice(1, 11)}
+									newsArray={articles.slice(1, 15)}
 								/>
 								<p className='h-[2px] bg-gray-200 w-full my-10'></p>
 								<NewsFeed
 									heading='Most Read'
-									newsArray={articles.slice(11, 20)}
+									newsArray={articles.slice(15, 30)}
 								/>
 							</>
 						)}
@@ -100,6 +101,9 @@ const HomePage = () => {
 					<div className='w-full lg:w-[40%] flex flex-row lg:flex-col gap-10 flex-wrap lg:flex-nowrap'>
 						<div className='pl-0 lg:pl-[20px]'>
 							<FacebookFeed />
+						</div>
+						<div className='pl-0 lg:pl-[20px]'>
+							<YoutubeFeed />
 						</div>
 						<div className='pl-0 lg:pl-[20px]'>
 							<InstagramFeed />

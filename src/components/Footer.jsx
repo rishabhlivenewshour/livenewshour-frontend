@@ -105,7 +105,7 @@ const Footer = () => {
 					</p>
 					<div className='flex gap-5 text-gray-400'>
 						<Link
-							to='https://www.facebook.com/livenewshour'
+							to='https://www.facebook.com/profile.php?id=61584092181307'
 							target='_blank'
 							rel='noopener noreferrer'
 							aria-label='Visit our Facebook page'
