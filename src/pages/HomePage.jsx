@@ -113,22 +113,6 @@ const HomePage = () => {
 								<NewsFeedByCategory key={category.id} category={category} />
 							))}
 						</div>
-						{/* <div className='flex gap-5'>
-							<div className='w-full flex flex-row lg:flex-col flex-wrap lg:flex-nowrap gap-20 order-2 lg:order-1'>
-								{categories
-									.slice(Math.floor(total_categories / 2))
-									.map((category) => (
-										<NewsFeedByCategory key={category.id} category={category} />
-									))}
-							</div>
-							<div className='w-full flex flex-row lg:flex-col flex-wrap lg:flex-nowrap gap-20 order-2 lg:order-1'>
-								{categories
-									.slice(0, Math.floor(total_categories / 2))
-									.map((category) => (
-										<NewsFeedByCategory key={category.id} category={category} />
-									))}
-							</div>
-						</div> */}
 					</div>
 				</div>
 			</div>

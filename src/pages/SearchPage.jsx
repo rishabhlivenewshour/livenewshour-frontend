@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { useDebounce } from '../hooks/useDebounce';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import {
 	selectArticlesError,
@@ -8,16 +8,12 @@ import {
 } from '../features/articles/articleSelector';
 import { selectCategories } from '../features/categories/categorySelector';
 import NewsFeedByCategory from '../components/feeds/NewsFeedByCategory';
-import {
-	fetchArticlesBySearch,
-	fetchArticles,
-} from '../features/articles/articleThunks';
+import { fetchArticlesBySearch } from '../features/articles/articleThunks';
 import { clearSearchResults } from '../features/articles/articleSlice';
-import ArticleSkeleton from '../components/articles/ArticleSkeleton';
 import { getOptimalPageSize } from '../utils/networkDetection';
-import OptimizedImage from '../components/common/OptimizedImage';
 import SEOHead from '../components/seo/SEOHead';
-import { LoaderIcon, SearchIcon } from '../components/common/Icons';
+import { SearchIcon } from '../components/common/Icons';
+import SearchResults from '../components/feeds/SearchResults';
 
 const SearchPage = () => {
 	const dispatch = useDispatch();
@@ -32,9 +28,9 @@ const SearchPage = () => {
 
 	const [searchQuery, setSearchQuery] = useState(queryParam);
 	const [currentPage, setCurrentPage] = useState(1);
+	const [totalPages, setTotalPages] = useState(1);
 	const [allResults, setAllResults] = useState([]);
 	const [hasMore, setHasMore] = useState(false);
-	const [recentArticles, setRecentArticles] = useState([]);
 
 	const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
@@ -59,6 +55,8 @@ const SearchPage = () => {
 							pageSize,
 						})
 					).unwrap();
+
+					setTotalPages(result.pagination.totalPages);
 
 					if (currentPage === 1) {
 						setAllResults(result.articles);
@@ -87,44 +85,27 @@ const SearchPage = () => {
 		performSearch();
 	}, [debouncedSearchQuery, currentPage, dispatch]);
 
-	// Fetch recent articles for empty state
-	useEffect(() => {
-		const fetchRecentArticles = async () => {
-			if (!debouncedSearchQuery) {
-				try {
-					const result = await dispatch(
-						fetchArticles({ page: 1, pageSize: 20 })
-					).unwrap();
-					setRecentArticles(result.articles);
-				} catch (error) {
-					console.error('Failed to fetch recent articles:', error);
-				}
-			}
-		};
-		fetchRecentArticles();
-	}, [debouncedSearchQuery, dispatch]);
-
 	// Intersection Observer for infinite scroll
 	useEffect(() => {
+		if (!observerTarget.current) return;
+
 		const observer = new IntersectionObserver(
 			(entries) => {
-				if (entries[0].isIntersecting && hasMore && !articlesLoading) {
+				if (
+					entries[0].isIntersecting &&
+					!articlesLoading &&
+					currentPage < totalPages
+				) {
 					setCurrentPage((prev) => prev + 1);
 				}
 			},
 			{ threshold: 0.1 }
 		);
 
-		if (observerTarget.current) {
-			observer.observe(observerTarget.current);
-		}
+		observer.observe(observerTarget.current);
 
-		return () => {
-			if (observerTarget.current) {
-				observer.unobserve(observerTarget.current);
-			}
-		};
-	}, [hasMore, articlesLoading]);
+		return () => observer.disconnect();
+	}, [articlesLoading, currentPage, totalPages]);
 
 	const total_categories = categories.length;
 
@@ -160,7 +141,6 @@ const SearchPage = () => {
 			/>
 			<div className='py-5'>
 				<div className='flex flex-col lg:flex-row gap-10 pt-5 pb-16 tracking-wide'>
-					{/* <p className='block lg:hidden h-[2px] bg-gray-200 w-full my-10'></p> */}
 					<div className='w-full lg:w-[25%] flex flex-row lg:flex-col flex-wrap lg:flex-nowrap gap-10 order-2 lg:order-1'>
 						{categories
 							.slice(Math.floor(total_categories / 2))
@@ -187,130 +167,16 @@ const SearchPage = () => {
 						</div>
 
 						{/* Search Results */}
-						<div className='flex flex-col gap-5 my-10'>
-							{allResults.length > 0 ? (
-								<>
-									{allResults.map((article) => (
-										<Link
-											to={`/news/articles/${article.slug}`}
-											key={article.id}
-											className='flex gap-3 w-full hover:bg-gray-100 p-2 rounded transition'
-										>
-											<OptimizedImage
-												src={article.banner_image}
-												alt={article.title}
-												className='w-full max-w-[150px] lg:max-w-[250px] h-[100px] object-cover rounded'
-												onError={(e) => {
-													e.target.style.display = 'none';
-												}}
-											/>
-											<div className='flex-1'>
-												<h2 className='font-semibold'>{article.title}</h2>
-												<p className='w-full text-sm text-light h-15 overflow-hidden line-clamp-3'>
-													{article.summary}
-												</p>
-												<div className='flex justify-between text-xs mt-1'>
-													<p className='font-semibold text-primary'>
-														{article.category_name}
-													</p>
-													<p className='lg:hidden xl:block text-light italic'>
-														{'- '}
-														{article.author}
-													</p>
-												</div>
-											</div>
-										</Link>
-									))}
-
-									{/* Infinite Scroll Trigger */}
-									{hasMore && (
-										<div
-											ref={observerTarget}
-											className='flex justify-center items-center py-6'
-										>
-											{articlesLoading ? (
-												<div className='flex flex-col items-center gap-3'>
-													<LoaderIcon
-														className='animate-spin text-red-600'
-														size={40}
-													/>
-													<p className='text-gray-600 text-sm'>
-														Loading more results...
-													</p>
-												</div>
-											) : (
-												<div className='h-10'></div>
-											)}
-										</div>
-									)}
-
-									{/* End of Results */}
-									{!hasMore && allResults.length > 0 && (
-										<div className='py-6 text-center'>
-											<p className='text-gray-500 text-sm'>
-												You've reached the end of search results
-											</p>
-										</div>
-									)}
-								</>
-							) : (
-								<div className='w-full'>
-									{articlesLoading && currentPage === 1 ? (
-										<div className='flex flex-col gap-5'>
-											<ArticleSkeleton variant='list' />
-											<ArticleSkeleton variant='list' />
-											<ArticleSkeleton variant='list' />
-										</div>
-									) : (
-										<>
-											<p className='text-light text-center mb-10'>
-												{debouncedSearchQuery
-													? 'No results found'
-													: 'Start typing to search articles'}
-											</p>
-											{recentArticles.length > 0 && (
-												<div className='w-full flex flex-col'>
-													<h1 className='text-sm font-semibold tracking-wider text-dark border-l-4 border-primary py-[1px] px-2 mb-5 uppercase'>
-														Read Latest news
-													</h1>
-													<div className='flex flex-col gap-5'>
-														{recentArticles.map((article) => (
-															<Link
-																to={`/news/articles/${article.slug}`}
-																key={article.id}
-																className='flex gap-3 hover:bg-gray-100 p-2 rounded transition'
-															>
-																<OptimizedImage
-																	src={article.banner_image}
-																	alt={article.title}
-																	className='w-full max-w-[150px] lg:max-w-[250px] h-[100px] object-cover rounded'
-																	onError={(e) => {
-																		e.target.style.display = 'none';
-																	}}
-																/>
-																<div className='flex-1'>
-																	<h2 className='font-semibold'>
-																		{article.title}
-																	</h2>
-																	<p className='w-full text-sm text-light h-15 overflow-hidden line-clamp-3'>
-																		{article.summary}
-																	</p>
-																	<p className='font-semibold text-xs text-primary'>
-																		{article.category_name}
-																	</p>
-																</div>
-															</Link>
-														))}
-													</div>
-												</div>
-											)}
-										</>
-									)}
-								</div>
-							)}
-						</div>
+						<SearchResults
+							debouncedSearchQuery={debouncedSearchQuery}
+							allResults={allResults}
+							hasMore={hasMore}
+							observerTarget={observerTarget}
+							currentPage={currentPage}
+							articlesLoading={articlesLoading}
+						/>
 					</div>
-					{/* <p className='block lg:hidden h-[2px] bg-gray-200 w-full my-10'></p> */}
+
 					<div className='w-full lg:w-[25%] flex flex-row lg:flex-col flex-wrap lg:flex-nowrap gap-10 order-3 lg:order-3'>
 						{categories
 							.slice(0, Math.floor(total_categories / 2))

@@ -230,15 +230,6 @@ const ArticlesByCategoryPage = () => {
 							)}
 						</div>
 					)}
-
-					{/* End of List Message */}
-					{/* {!hasMore && allArticles.length > 0 && (
-						<div className='py-10 text-center w-full'>
-							<p className='text-gray-500 text-sm'>
-								You've reached the end of {categoryName} articles
-							</p>
-						</div>
-					)} */}
 				</div>
 			</div>
 		</>

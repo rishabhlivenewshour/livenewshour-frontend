@@ -75,7 +75,7 @@ const Navbar = () => {
 			</div>
 
 			<div
-				className={`hidden lg:flex items-center justify-center px-[5px] m-auto bg-white text-black text-[14px] mt-3 pb-2 shadow-sm tracking-wide font-[400]`}
+				className={`hidden lg:flex items-center justify-center px-[5px] m-auto bg-white text-black text-[13px] mt-1.5 pb-1 tracking-wide font-[400]`}
 			>
 				{!categoriesLoading && (
 					<>

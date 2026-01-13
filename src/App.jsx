@@ -10,6 +10,7 @@ import { fetchCategories } from './features/categories/categoryThunks';
 import { onNetworkChange, getNetworkInfo } from './utils/networkDetection';
 import ErrorBoundary from './components/error/ErrorBoundary';
 import { LoaderIcon } from './components/common/Icons';
+import NewsTicker from './components/feeds/NewsTicker';
 
 // ✅ Lazy load route components
 const HomePage = lazy(() => import('./pages/HomePage'));
@@ -73,12 +74,13 @@ function App() {
 				<BackToTop />
 
 				{/* Fixed Navbar */}
-				<div className='fixed w-[100vw] mt-[-64px] lg:mt-[-106px] z-[999]'>
+				<div className='fixed w-[100vw] mt-[-64px] lg:mt-[-126px] z-[999]'>
 					<Navbar />
+					<NewsTicker />
 				</div>
 
 				{/* Page Container */}
-				<div className='mt-[64px] lg:mt-[106px] px-[5vw] sm:px-[14vw]'>
+				<div className='mt-[64px] lg:mt-[126px] px-[5vw] sm:px-[14vw]'>
 					<Suspense fallback={<LoaderComponent />}>
 						<Routes>
 							<Route path='/' element={<HomePage />} />
